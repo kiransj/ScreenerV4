@@ -55,6 +55,24 @@ namespace MarketData.NseMarket
         public string ISINNumber { get; set; }
     }
 
+    //https://www.nseindia.com/content/indices/ind_close_all_02082018.csv
+    public class IndexBhav
+    {
+        public string IndexName { get; set; }
+        public DateTime IndexDate {get; set; }
+        public float OpenValue {get; set; }
+        public float HighValue {get; set; }
+        public float LowValue {get; set; }
+        public float CloseValue {get; set; }
+        public float PointsChange {get; set; }
+        public float PointsChangePct {get; set; }
+        public float Volume {get; set; }
+        public float TurnOver {get; set; }
+        public float PE {get; set; }
+        public float PB {get; set; }
+        public float DivYield {get; set; }
+    }
+
     // Information in https://www.nseindia.com/archives/equities/mto/MTO_DDMMYYYY.DAT
     // Ignore first 4 lines
     public class DeliveryPosition
@@ -86,24 +104,6 @@ namespace MarketData.NseMarket
         public float High52Week {get; set; }
         public float Low52Week {get; set; }
         public string Underlying {get; set; }
-    }
-
-    //https://www.nseindia.com/content/indices/ind_close_all_02082018.csv
-    public class IndexBhav
-    {
-        public string IndexName { get; set; }
-        public DateTime IndexDate {get; set; }
-        public float OpenValue {get; set; }
-        public float HighValue {get; set; }
-        public float LowValue {get; set; }
-        public float CloseValue {get; set; }
-        public float PointsChange {get; set; }
-        public float PointsChangePct {get; set; }
-        public float Volume {get; set; }
-        public float TurnOver {get; set; }
-        public float PE {get; set; }
-        public float PB {get; set; }
-        public float DivYield {get; set; }
     }
 
     //Information in PRDDMMYY.zip => bhDDMMYY.csv
