@@ -12,6 +12,8 @@ namespace Helper
     }
     public class Logger
     {
+        private static readonly object fileLock = new object();
+        private static readonly object consoleLock = new object();
         private static Logger log = new Logger();
         private LogLevel logLevel;
         private string Filename = null;
@@ -36,8 +38,20 @@ namespace Helper
         {
             if(level >= logLevel)
             {
-                if(writeToConsole) Console.WriteLine("{0}", text);
-                if(Filename != null) File.AppendAllText(Filename, $"{text}\n");
+                if(writeToConsole)
+                {
+                    lock(consoleLock)
+                    {
+                        Console.WriteLine("{0}", text);
+                    }
+                }
+                if(Filename != null)
+                {
+                    lock(fileLock)
+                    {
+                        File.AppendAllText(Filename, $"{text}\n");
+                    }
+                }
             }
         }
     }
