@@ -19,7 +19,7 @@ namespace Helper
         private string Filename = null;
         private bool writeToConsole = true;
 
-        public static Logger GetLoggerInstance() => log;
+        public static ref Logger GetLoggerInstance() => ref log;
         public void LogToCosole(bool write) => writeToConsole = write;
         public void LogToFile(string file) => Filename = file;
         public void SetLogLevel(LogLevel level) => logLevel = level;

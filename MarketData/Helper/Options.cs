@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -52,7 +53,8 @@ namespace Helper
     {
         private static readonly object padlock = new object();
         private static AppOptions options = null;
-
+        private static string fileName = "";
+        private static Logger log = Logger.GetLoggerInstance();
         static public AppOptions app { get { return options; }}
         Options()
         {
@@ -66,8 +68,22 @@ namespace Helper
                 lock(padlock)
                 {
                     if(options == null)
+                    {
                         options = JsonConvert.DeserializeObject<AppOptions>(File.ReadAllText(filename));
+                        Options.fileName = filename;
+                        log.Info($"Options file {filename}");
+                        if(options.LogFileName.Length > 0)
+                        {
+                            log.Info($"Logging contents to file {options.LogFileName}");
+                            log.LogToFile(options.LogFileName);
+                        }
+                    }
                 }
+            }
+            else
+            {
+                log.Error($"Trying to Initialize options twice. Options already initialized with contents of file {fileName}");
+                throw new Exception($"Trying to Initialize options twice. Options initialized with contents of fiel {fileName}");
             }
         }
     }
