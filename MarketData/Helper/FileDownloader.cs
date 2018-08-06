@@ -10,20 +10,20 @@ namespace Helper
         public FileDownloader(string userAgent = null, string host = null)
         {
             wc = new WebClient();
-            wc.Headers["User-Agent"] = userAgent ?? Globals.options.httpOptions.UserAgent;
-            wc.Headers["Host"] = host ?? Globals.options.httpOptions.Host;
+            wc.Headers["User-Agent"] = userAgent ?? Globals.Options.httpClient.UserAgent;
+            wc.Headers["Host"] = host ?? Globals.Options.httpClient.Host;
         }
 
         public void DownloadAsString(string url, out string data)
         {
-            Globals.log.Info($"url -> string: {url}");
+            Globals.Log.Info($"url -> string: {url}");
             data = wc.DownloadString(url);
             //await wc.DownloadStringAsync(new Uri(url, UriKind.Absolute));
         }
 
         public void DownloadAsFile(string url, string filename)
         {
-            Globals.log.Info($"url -> file <{filename}>: {url}");
+            Globals.Log.Info($"url -> file <{filename}>: {url}");
             wc.DownloadFile(url, filename);
         }
     }

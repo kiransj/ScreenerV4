@@ -21,7 +21,17 @@ namespace Helper
 
         public static ref Logger GetLoggerInstance() => ref log;
         public void LogToCosole(bool write) => writeToConsole = write;
-        public void LogToFile(string file) => Filename = file;
+        public void LogToFile(string file) {
+            // Create the file if it did not exist
+            if(!File.Exists(file))
+            {
+                using(var fileStream = File.Create(file))
+                {
+                    Filename = file;
+                }
+            }
+            Filename = file;
+        }
         public void SetLogLevel(LogLevel level) => logLevel = level;
 
         public void Debug(string text) => Write($"D-{DateTime.Now}: {text}", LogLevel.DEBUG);
@@ -42,7 +52,9 @@ namespace Helper
                 {
                     lock(consoleLock)
                     {
+                        if(level == LogLevel.ERROR)  Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("{0}", text);
+                        Console.ResetColor();
                     }
                 }
                 if(Filename != null)

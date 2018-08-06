@@ -13,8 +13,8 @@ namespace MarketData
             NseURLs url = new NseURLs(DateTime.Now);
             FileDownloader fileDownloader = new FileDownloader();
             string data;
-            fileDownloader.DownloadAsString(url.EquityListUrl, out data);
-            Globals.log.Info(data);
+           // fileDownloader.DownloadAsString(url.EquityListUrl, out data);
+           // Globals.Log.Info(data);
         }
     }
 }
