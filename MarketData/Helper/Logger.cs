@@ -25,9 +25,16 @@ namespace Helper
             // Create the file if it did not exist
             if(!File.Exists(file))
             {
-                using(var fileStream = File.Create(file))
+                try {
+                    using(var fileStream = File.Create(file))
+                    {
+                        Filename = file;
+                    }
+                }
+                catch(Exception ex)
                 {
-                    Filename = file;
+                    Error($"Unable to create log file '{file}' due to '{ex.Message}'.\n>>>>>>>Exiting with code 1<<<<<<<");
+                    Environment.Exit(1);
                 }
             }
             Filename = file;

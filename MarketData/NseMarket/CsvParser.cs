@@ -1,4 +1,9 @@
+using System.Text;
+using TinyCsvParser;
 using TinyCsvParser.Mapping;
+using Helper;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace MarketData.NseMarket
 {
@@ -143,5 +148,50 @@ namespace MarketData.NseMarket
         }
     }
 
+    public class CsvParser
+    {
+        public List<EquityInformation> ParseEquityInformationFile(string filename)
+        {
+            CsvParser<EquityInformation> csvParser = new CsvParser<EquityInformation>(new CsvParserOptions(true, ','), new CSVEquityInformation());
+            Globals.Log.Debug($"Parsing NSE Company Information CSV file {filename}");
 
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .ToList();
+        }
+
+        public List<ETFInformation> ParseETFInformationFile(string filename)
+        {
+            CsvParser<ETFInformation> csvParser = new CsvParser<ETFInformation>(new CsvParserOptions(true, ','), new CSVETFInformation());
+            Globals.Log.Debug($"Parsing NSE ETF Information CSV file {filename}");
+
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => x != null)
+                            .ToList();
+        }
+
+
+        public List<IndexBhav> ParseIndexBhavFile(string filename)
+        {
+            CsvParser<IndexBhav> csvParser = new CsvParser<IndexBhav>(new CsvParserOptions(true, ','), new CsvIndexBhav());
+            Globals.Log.Debug($"Parsing NSE ETF Information CSV file {filename}");
+
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => x != null)
+                            .ToList();
+        }
+
+        public List<Bhav> ParseBhavFile(string filename)
+        {
+            CsvParser<Bhav> csvParser = new CsvParser<Bhav>(new CsvParserOptions(true, ','), new CsvBhav());
+            Globals.Log.Debug($"Parsing NSE ETF Information CSV file {filename}");
+
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => x != null)
+                            .ToList();
+        }
+    }
 }

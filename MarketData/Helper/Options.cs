@@ -9,12 +9,12 @@ namespace Helper
     {
         public int Port { get; set; }
     }
-    public class HttpClient
+    public class HttpClientOptions
     {
         public string UserAgent { get; set; }
         public string Host { get; set; }
 
-        public HttpClient()
+        public HttpClientOptions()
         {
             UserAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Mobile Safari/537.36";
             Host = "www.nseindia.com";
@@ -27,7 +27,7 @@ namespace Helper
         public string DbFilename { get; set; } // Database filename
         public string TmpFolder { get; set; } //Folder to unzip files
         public string LogFileName { get; set;}
-        public HttpClient httpClient;
+        public HttpClientOptions httpClient;
         public HttpServer httpServer;
 
         public AppOptions()
@@ -35,7 +35,7 @@ namespace Helper
             CachingEnabled = false;
             DbFilename = null;
             TmpFolder = null;
-            httpClient = new HttpClient();
+            httpClient = new HttpClientOptions();
         }
 
         public override string ToString()

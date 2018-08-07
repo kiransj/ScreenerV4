@@ -125,4 +125,13 @@ namespace MarketData.NseMarket
         public double High52week { get; set; }
         public double Low52week { get; set; }
     }
+
+    public class IndexInformation
+    {
+        public string IndexName { get; set; }
+        public IndexInformation(string index)
+        {
+            IndexName = index;
+        }
+    }
 }

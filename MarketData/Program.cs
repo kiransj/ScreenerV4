@@ -12,9 +12,12 @@ namespace MarketData
             Globals.InitGlobals("Options.json");
             NseURLs url = new NseURLs(DateTime.Now);
             FileDownloader fileDownloader = new FileDownloader();
-            string data;
-           // fileDownloader.DownloadAsString(url.EquityListUrl, out data);
-           // Globals.Log.Info(data);
+            //string data;
+            //fileDownloader.DownloadAsString(url.ETFListUrl, out data);
+            //Globals.Log.Info(data);
+
+            MarketAPI api = new MarketAPI();
+            api.GetSecurityList();
         }
     }
 }
