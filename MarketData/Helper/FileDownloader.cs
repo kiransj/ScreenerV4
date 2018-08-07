@@ -49,7 +49,7 @@ namespace Helper
         public async Task Download(string url, string filename)
         {
             Stopwatch sw = new Stopwatch();
-            Globals.Log.Info($"url -> file <{filename}>: {url}");
+            Globals.Log.Info($"url -> file (async) <{filename}>: <{url}>");
             sw.Start();
             using (HttpClient client = new HttpClient())
             {
@@ -65,7 +65,7 @@ namespace Helper
                 }
             }
             sw.Stop();
-            Globals.Log.Info($"{url} took {sw.Elapsed} seconds");
+            Globals.Log.Info($"{url} (async) took {sw.Elapsed} seconds");
             return;
         }
     }

@@ -157,6 +157,7 @@ namespace MarketData.NseMarket
 
             return csvParser.ReadFromFile(filename, Encoding.ASCII)
                             .Select(x => x.Result)
+                            .Where(x => x != null)
                             .ToList();
         }
 
@@ -175,7 +176,7 @@ namespace MarketData.NseMarket
         public List<IndexBhav> ParseIndexBhavFile(string filename)
         {
             CsvParser<IndexBhav> csvParser = new CsvParser<IndexBhav>(new CsvParserOptions(true, ','), new CsvIndexBhav());
-            Globals.Log.Debug($"Parsing NSE ETF Information CSV file {filename}");
+            Globals.Log.Debug($"Parsing Index Bhav Information CSV file {filename}");
 
             return csvParser.ReadFromFile(filename, Encoding.ASCII)
                             .Select(x => x.Result)
@@ -186,11 +187,71 @@ namespace MarketData.NseMarket
         public List<Bhav> ParseBhavFile(string filename)
         {
             CsvParser<Bhav> csvParser = new CsvParser<Bhav>(new CsvParserOptions(true, ','), new CsvBhav());
-            Globals.Log.Debug($"Parsing NSE ETF Information CSV file {filename}");
+            Globals.Log.Debug($"Parsing Bhav Information CSV file {filename}");
 
             return csvParser.ReadFromFile(filename, Encoding.ASCII)
                             .Select(x => x.Result)
                             .Where(x => x != null)
+                            .ToList();
+        }
+
+        public List<ETFBhav> ParseETFBhavFile(string filename)
+        {
+            CsvParser<ETFBhav> csvParser = new CsvParser<ETFBhav>(new CsvParserOptions(true, ','), new CsvETFBhav());
+            Globals.Log.Debug($"Parsing ETF Bhav Information CSV file {filename}");
+
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => x != null)
+                            .ToList();
+        }
+
+        public List<DeliveryPosition> ParseDeliveryPositionFile(string filename)
+        {
+            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
+            CsvDeliveryPositionMapping csvMapper = new CsvDeliveryPositionMapping();
+            CsvParser<DeliveryPosition> csvParser = new CsvParser<DeliveryPosition>(csvParserOptions, csvMapper);
+
+            Globals.Log.Debug($"Parsing NSE Delivery Position CSV file {filename}");
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => x != null)
+                            .ToList();
+        }
+
+
+        public List<CompanyToIndustryMapping> ParseCompanyToIndustryMappingFile(string filename)
+        {
+            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
+            CSVCompanyToIndustryMapping csvMapper = new CSVCompanyToIndustryMapping();
+            CsvParser<CompanyToIndustryMapping> csvParser = new CsvParser<CompanyToIndustryMapping>(csvParserOptions, csvMapper);
+
+            Globals.Log.Debug($"Parsing NSE Company to industry CSV file {filename}");
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => x != null)
+                            .ToList();
+        }
+
+        public List<CircuitBreaker> ParseCircuitBreakerFile(string filename)
+        {
+            CsvParser<CircuitBreaker> csvParser = new CsvParser<CircuitBreaker>(new CsvParserOptions(true, ','), new CsvCircuitBreakerMapping());
+
+            Globals.Log.Debug($"Parsing NSE Circuit Breaker file CSV file {filename}");
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => x != null)
+                            .ToList();
+        }
+
+        public List<HighLow52week> ParseHighLow52WeekFile(string filename)
+        {
+            CsvParser<HighLow52week> csvParser = new CsvParser<HighLow52week>(new CsvParserOptions(true, ','), new CsvHighLow52WeekMapping());
+
+            Globals.Log.Debug($"Parsing HighLow52week file CSV file {filename}");
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => (x != null) && (x.Symbol.Length >= 2))
                             .ToList();
         }
     }

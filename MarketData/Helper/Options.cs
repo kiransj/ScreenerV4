@@ -24,7 +24,7 @@ namespace Helper
     public class AppOptions
     {
         public bool CachingEnabled { get; set; } // Enable Caching
-        public string DbFilename { get; set; } // Database filename
+        public string DBFolder { get; set; } // Database filename
         public string TmpFolder { get; set; } //Folder to unzip files
         public string LogFileName { get; set;}
         public HttpClientOptions httpClient;
@@ -33,7 +33,7 @@ namespace Helper
         public AppOptions()
         {
             CachingEnabled = false;
-            DbFilename = null;
+            DBFolder = null;
             TmpFolder = null;
             httpClient = new HttpClientOptions();
         }
@@ -42,7 +42,7 @@ namespace Helper
         {
             string output = "{\n";
             output += $"\t\tCachingEnabled: {CachingEnabled}\n";
-            output += $"\t\tDbFilename: {DbFilename}\n";
+            output += $"\t\tDbFilename: {DBFolder}\n";
             output += $"\t\tTmpFolder: {TmpFolder}\n";
             output += $"\t\tLogFileName: {LogFileName}\n";
             output += "\t\thttpOptions: {\n";
