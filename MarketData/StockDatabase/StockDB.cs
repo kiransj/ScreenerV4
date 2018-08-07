@@ -221,14 +221,23 @@ namespace MarketData.StockDatabase
             modelBuilder.Entity<EquityInformationTable>().HasIndex(x => x.ISINNumber).IsUnique();
             modelBuilder.Entity<IndexInformationTable>().HasIndex(x => x.IndexName).IsUnique();
             modelBuilder.Entity<CompanyToIndustryTable>().HasIndex(x => new { x.CompanyId, x.Industry}).IsUnique();
-            modelBuilder.Entity<EquityBhavTable>().HasIndex(x => x.Day).IsUnique();
-            modelBuilder.Entity<EquityBhavTable>().HasIndex(x => x.CompanyId).IsUnique();
-            modelBuilder.Entity<EquityOHLCTable>().HasIndex(x => x.CompanyId).IsUnique();
-            modelBuilder.Entity<EquityOHLCTable>().HasIndex(x => x.Day).IsUnique();
-            modelBuilder.Entity<IndexBhavTable>().HasIndex(x => x.Day).IsUnique();
-            modelBuilder.Entity<IndexBhavTable>().HasIndex(x => x.IndexId).IsUnique();
-            modelBuilder.Entity<CircuitBreakerTable>().HasIndex(x => x.Day).IsUnique();
-            modelBuilder.Entity<CircuitBreakerTable>().HasIndex(x => x.CompanyId).IsUnique();
+
+            modelBuilder.Entity<EquityBhavTable>().HasIndex(x => x.CompanyId);
+            modelBuilder.Entity<EquityBhavTable>().HasIndex(x => x.Day);
+            modelBuilder.Entity<EquityBhavTable>().HasIndex(x => new { x.CompanyId, x.Day}).IsUnique();
+
+            modelBuilder.Entity<EquityOHLCTable>().HasIndex(x => x.CompanyId);
+            modelBuilder.Entity<EquityOHLCTable>().HasIndex(x => x.Day);
+            modelBuilder.Entity<EquityOHLCTable>().HasIndex(x => new { x.CompanyId, x.Day}).IsUnique();
+
+            modelBuilder.Entity<IndexBhavTable>().HasIndex(x => x.Day);
+            modelBuilder.Entity<IndexBhavTable>().HasIndex(x => x.IndexId);
+            modelBuilder.Entity<IndexBhavTable>().HasIndex(x => new {x.Day, x.IndexId}).IsUnique();
+
+            modelBuilder.Entity<CircuitBreakerTable>().HasIndex(x => x.Day);
+            modelBuilder.Entity<CircuitBreakerTable>().HasIndex(x => x.CompanyId);
+            modelBuilder.Entity<CircuitBreakerTable>().HasIndex(x => new {x.CompanyId, x.Day}).IsUnique();
+
             modelBuilder.Entity<HighLow52WeekTable>().HasIndex(x => x.CompanyId).IsUnique();
         }
 

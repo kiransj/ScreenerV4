@@ -89,7 +89,7 @@ namespace MarketData.NseMarket
     {
         public int RecordType { get; set; }
         public int SerialNumber { get; set; }
-        public string SecurityName { get; set; }
+        public string Symbol { get; set; }
         public string Series { get; set; }
         public long QtyTraded { get; set; }
         public long DeliverableQty { get; set; }

@@ -63,7 +63,7 @@ namespace MarketData.NseMarket
         public List<EquityInformation> Equitys;
         public List<ETFInformation> Etfs;
         public List<IndexInformation> Indexes;
-        public List<IndexBhav> IndexDailyData;
+        public List<IndexBhav> IndexBhavData;
         public List<Bhav> BhavData;
         public List<ETFBhav> ETFBhavData;
         public List<CompanyToIndustryMapping> CompanyToIndustry;
@@ -77,7 +77,7 @@ namespace MarketData.NseMarket
                    $"\t\t\tCompanies: {Equitys.Count}\n" +
                    $"\t\t\tETF: {Etfs.Count}\n" +
                    $"\t\t\tIndex: {Indexes.Count}\n" +
-                   $"\t\t\tIndexBhav: {IndexDailyData.Count}\n"  +
+                   $"\t\t\tIndexBhav: {IndexBhavData.Count}\n"  +
                    $"\t\t\tBhav: {BhavData.Count}\n" +
                    $"\t\t\tETFBhav: {ETFBhavData.Count}\n" +
                    $"\t\t\tIndustry: {CompanyToIndustry.Count}\n" +
@@ -144,7 +144,7 @@ namespace MarketData.NseMarket
             // Parse all the downloaded Data
             dailyData.Equitys = csvParser.ParseEquityInformationFile(urlToFileMapping[nseUrls.EquityListUrl]);
             dailyData.Etfs = csvParser.ParseETFInformationFile(urlToFileMapping[nseUrls.ETFListUrl]);
-            dailyData.IndexDailyData = csvParser.ParseIndexBhavFile(urlToFileMapping[nseUrls.IndexBhavUrl]);
+            dailyData.IndexBhavData = csvParser.ParseIndexBhavFile(urlToFileMapping[nseUrls.IndexBhavUrl]);
             dailyData.deliveryPosition = csvParser.ParseDeliveryPositionFile(urlToFileMapping[nseUrls.DeliveryPositionUrL]);
             dailyData.CompanyToIndustry = csvParser.ParseCompanyToIndustryMappingFile(urlToFileMapping[nseUrls.CompanyToIndustryMappingUrl]);
 
@@ -155,10 +155,8 @@ namespace MarketData.NseMarket
             dailyData.highLow52Week = csvParser.ParseHighLow52WeekFile($"{folder}/{nseUrls.HighLow52WeekFilename}");
 
             // Computed Valus
-            dailyData.Indexes = dailyData.IndexDailyData.Select(x => new IndexInformation(x.IndexName))
-                                                        .OrderBy(x => x.IndexName)
-                                                        .Distinct()
-                                                        .ToList();
+            dailyData.Indexes = dailyData.IndexBhavData.Select(x => new IndexInformation(x.IndexName))
+                                                       .ToList();
             return dailyData;
         }
     }

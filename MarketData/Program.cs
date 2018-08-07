@@ -24,7 +24,9 @@ namespace MarketData
             StockDBApi api = new StockDBApi();
             var data = DownloadTodayData();
 
-            api.AddOrUpdateEquityInformation(data.Equitys, data.Etfs);
+            int count = api.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
+            count += api.AddBhavData(data.BhavData, data.deliveryPosition, data.IndexBhavData);
+            Globals.Log.Info($"Updated {count} rows");
         }
 
 

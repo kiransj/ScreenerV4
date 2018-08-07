@@ -30,10 +30,11 @@ namespace MarketData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
-                    b.HasIndex("Day")
+                    b.HasIndex("Day");
+
+                    b.HasIndex("CompanyId", "Day")
                         .IsUnique();
 
                     b.ToTable("CircuitBreaker");
@@ -80,10 +81,11 @@ namespace MarketData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
-                    b.HasIndex("Day")
+                    b.HasIndex("Day");
+
+                    b.HasIndex("CompanyId", "Day")
                         .IsUnique();
 
                     b.ToTable("EquityBhav");
@@ -151,10 +153,11 @@ namespace MarketData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
-                    b.HasIndex("Day")
+                    b.HasIndex("Day");
+
+                    b.HasIndex("CompanyId", "Day")
                         .IsUnique();
 
                     b.ToTable("EquityOHLC");
@@ -212,10 +215,11 @@ namespace MarketData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Day")
-                        .IsUnique();
+                    b.HasIndex("Day");
 
-                    b.HasIndex("IndexId")
+                    b.HasIndex("IndexId");
+
+                    b.HasIndex("Day", "IndexId")
                         .IsUnique();
 
                     b.ToTable("IndexBhav");

@@ -116,7 +116,7 @@ namespace MarketData.NseMarket
         {
             MapProperty(0, x => x.RecordType);
             MapProperty(1, x => x.SerialNumber);
-            MapProperty(2, x => x.SecurityName);
+            MapProperty(2, x => x.Symbol);
             MapProperty(3, x => x.Series);
             MapProperty(4, x => x.QtyTraded);
             MapProperty(5, x => x.DeliverableQty);

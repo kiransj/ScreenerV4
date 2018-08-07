@@ -154,13 +154,17 @@ namespace MarketData.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_CircuitBreaker_CompanyId",
                 table: "CircuitBreaker",
-                column: "CompanyId",
-                unique: true);
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CircuitBreaker_Day",
                 table: "CircuitBreaker",
-                column: "Day",
+                column: "Day");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CircuitBreaker_CompanyId_Day",
+                table: "CircuitBreaker",
+                columns: new[] { "CompanyId", "Day" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -178,25 +182,33 @@ namespace MarketData.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_EquityBhav_CompanyId",
                 table: "EquityBhav",
-                column: "CompanyId",
-                unique: true);
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquityBhav_Day",
                 table: "EquityBhav",
-                column: "Day",
+                column: "Day");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquityBhav_CompanyId_Day",
+                table: "EquityBhav",
+                columns: new[] { "CompanyId", "Day" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquityOHLC_CompanyId",
                 table: "EquityOHLC",
-                column: "CompanyId",
-                unique: true);
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquityOHLC_Day",
                 table: "EquityOHLC",
-                column: "Day",
+                column: "Day");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquityOHLC_CompanyId_Day",
+                table: "EquityOHLC",
+                columns: new[] { "CompanyId", "Day" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -208,13 +220,17 @@ namespace MarketData.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_IndexBhav_Day",
                 table: "IndexBhav",
-                column: "Day",
-                unique: true);
+                column: "Day");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IndexBhav_IndexId",
                 table: "IndexBhav",
-                column: "IndexId",
+                column: "IndexId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IndexBhav_Day_IndexId",
+                table: "IndexBhav",
+                columns: new[] { "Day", "IndexId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketData.Migrations
 {
     [DbContext(typeof(StockDataContext))]
-    [Migration("20180807083850_StockDatabaseCreate")]
+    [Migration("20180807094354_StockDatabaseCreate")]
     partial class StockDatabaseCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,10 +32,11 @@ namespace MarketData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
-                    b.HasIndex("Day")
+                    b.HasIndex("Day");
+
+                    b.HasIndex("CompanyId", "Day")
                         .IsUnique();
 
                     b.ToTable("CircuitBreaker");
@@ -82,10 +83,11 @@ namespace MarketData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
-                    b.HasIndex("Day")
+                    b.HasIndex("Day");
+
+                    b.HasIndex("CompanyId", "Day")
                         .IsUnique();
 
                     b.ToTable("EquityBhav");
@@ -153,10 +155,11 @@ namespace MarketData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
-                    b.HasIndex("Day")
+                    b.HasIndex("Day");
+
+                    b.HasIndex("CompanyId", "Day")
                         .IsUnique();
 
                     b.ToTable("EquityOHLC");
@@ -214,10 +217,11 @@ namespace MarketData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Day")
-                        .IsUnique();
+                    b.HasIndex("Day");
 
-                    b.HasIndex("IndexId")
+                    b.HasIndex("IndexId");
+
+                    b.HasIndex("Day", "IndexId")
                         .IsUnique();
 
                     b.ToTable("IndexBhav");
