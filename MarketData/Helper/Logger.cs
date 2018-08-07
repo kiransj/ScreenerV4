@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 
 namespace Helper
 {
@@ -18,6 +19,12 @@ namespace Helper
         private LogLevel logLevel;
         private string Filename = null;
         private bool writeToConsole = true;
+
+
+        private string TimeNow()
+        {
+            return DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+        }
 
         public static ref Logger GetLoggerInstance() => ref log;
         public void LogToCosole(bool write) => writeToConsole = write;
@@ -39,12 +46,12 @@ namespace Helper
             }
             Filename = file;
         }
-        public void SetLogLevel(LogLevel level) => logLevel = level;
 
-        public void Debug(string text) => Write($"D-{DateTime.Now}: {text}", LogLevel.DEBUG);
-        public void Info(string text) => Write($"I-{DateTime.Now}: {text}", LogLevel.INFO);
-        public void Warn(string text) => Write($"W-{DateTime.Now}: {text}", LogLevel.WARN);
-        public void Error(string text) => Write($"E-{DateTime.Now}: {text}", LogLevel.ERROR);
+        public void SetLogLevel(LogLevel level) => logLevel = level;
+        public void Debug(string text) => Write($"{TimeNow()},{Thread.CurrentThread.ManagedThreadId} DEBUG {text}", LogLevel.DEBUG);
+        public void Info(string text) => Write($"{TimeNow()},{Thread.CurrentThread.ManagedThreadId} INFO {text}", LogLevel.INFO);
+        public void Warn(string text) => Write($"{TimeNow()},{Thread.CurrentThread.ManagedThreadId} WARN {text}", LogLevel.WARN);
+        public void Error(string text) => Write($"{TimeNow()},{Thread.CurrentThread.ManagedThreadId} ERROR {text}", LogLevel.ERROR);
 
         private Logger()
         {

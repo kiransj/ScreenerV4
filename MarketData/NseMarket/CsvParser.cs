@@ -30,9 +30,9 @@ namespace MarketData.NseMarket
             MapProperty(1, x => x.Underlying);
             MapProperty(2, x => x.ETFName);
             MapProperty(3, x => x.DateOfListing);
-            MapProperty(5, x => x.MarketLot);
-            MapProperty(6, x => x.IsinNumber);
-            MapProperty(7, x => x.FaceValue);
+            MapProperty(4, x => x.MarketLot);
+            MapProperty(5, x => x.IsinNumber);
+            MapProperty(6, x => x.FaceValue);
         }
     }
 

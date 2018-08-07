@@ -59,6 +59,7 @@ namespace MarketData.NseMarket
 
     public class NseDailyData
     {
+        public DateTime date;
         public List<EquityInformation> Equitys;
         public List<ETFInformation> Etfs;
         public List<IndexInformation> Indexes;
@@ -72,17 +73,22 @@ namespace MarketData.NseMarket
 
         public override string ToString()
         {
-            return "\n" +
-                   $"Companies: {Equitys.Count}\n" +
-                   $"ETF: {Etfs.Count}\n" +
-                   $"Index: {Indexes.Count}\n" +
-                   $"IndexBhav: {IndexDailyData.Count}\n"  +
-                   $"Bhav: {BhavData.Count}\n" +
-                   $"ETFBhav: {ETFBhavData.Count}\n" +
-                   $"Industry: {CompanyToIndustry.Count}\n" +
-                   $"Delivery Position: {deliveryPosition.Count}\n" +
-                   $"Circuit Breakers: {circuitBreaker.Count}\n" +
-                   $"52 Week H/L: {highLow52Week.Count}\n" ;
+            return $"NseDailyData for {date.ToString("dd-MM-yyyy")}\n" +
+                   $"\t\t\tCompanies: {Equitys.Count}\n" +
+                   $"\t\t\tETF: {Etfs.Count}\n" +
+                   $"\t\t\tIndex: {Indexes.Count}\n" +
+                   $"\t\t\tIndexBhav: {IndexDailyData.Count}\n"  +
+                   $"\t\t\tBhav: {BhavData.Count}\n" +
+                   $"\t\t\tETFBhav: {ETFBhavData.Count}\n" +
+                   $"\t\t\tIndustry: {CompanyToIndustry.Count}\n" +
+                   $"\t\t\tDelivery Position: {deliveryPosition.Count}\n" +
+                   $"\t\t\tCircuit Breakers: {circuitBreaker.Count}\n" +
+                   $"\t\t\t52 Week H/L: {highLow52Week.Count}\n" ;
+        }
+
+        public NseDailyData(DateTime date)
+        {
+            this.date = date;
         }
     }
 
@@ -99,17 +105,9 @@ namespace MarketData.NseMarket
         public async Task<NseDailyData> GetDailyData(DateTime date)
         {
             NseURLs nseUrls = new NseURLs(date);
-            NseDailyData list = new NseDailyData();
+            NseDailyData list = new NseDailyData(date);
             Dictionary<string, string> urlToFileMapping = new Dictionary<string, string>();
             string folder = $"{Options.app.TmpFolder}/{date.ToString("ddMMyyyy")}";
-
-            // Delete the folder if it exists then create the folder
-            if(Directory.Exists(folder)) {
-                Globals.Log.Info($"Deleting folder {folder}");
-                Directory.Delete(folder, true);
-            }
-            Globals.Log.Info($"Creating folder {folder}");
-            Directory.CreateDirectory(folder);
 
             urlToFileMapping[nseUrls.BhavUrl] =  $"{folder}/bhav.csv.zip";
             urlToFileMapping[nseUrls.PRZipfileUrl] =  $"{folder}/PR.zip";
@@ -119,6 +117,16 @@ namespace MarketData.NseMarket
             urlToFileMapping[nseUrls.CompanyToIndustryMappingUrl] =  $"{folder}/mapping.csv";
             urlToFileMapping[nseUrls.DeliveryPositionUrL] =  $"{folder}/MTO.csv";
 
+#if false
+            // Delete the folder if it exists then create the folder
+            if(Directory.Exists(folder)) {
+                Globals.Log.Info($"Deleting folder {folder}");
+                Directory.Delete(folder, true);
+            }
+            Globals.Log.Info($"Creating folder {folder}");
+            Directory.CreateDirectory(folder);
+
+            Globals.Log.Info($"Download the {urlToFileMapping.Count}  URL's parallely.");
             List<Task> task = new List<Task>();
             foreach(var item in urlToFileMapping)
             {
@@ -127,10 +135,11 @@ namespace MarketData.NseMarket
             await Task.WhenAll(task.ToArray());
 
             Globals.Log.Info($"Extracting Zip files to {folder}");
-            ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.BhavUrl], folder);
-            ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.PRZipfileUrl], folder);
+            ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.BhavUrl], folder, true);
+            ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.PRZipfileUrl], folder, true);
+#endif
 
-            NseDailyData dailyData = new NseDailyData();
+            NseDailyData dailyData = new NseDailyData(date);
 
             // Parse all the downloaded Data
             dailyData.Equitys = csvParser.ParseEquityInformationFile(urlToFileMapping[nseUrls.EquityListUrl]);
@@ -151,37 +160,6 @@ namespace MarketData.NseMarket
                                                         .Distinct()
                                                         .ToList();
             return dailyData;
-        }
-        public async Task<NseDailyData> GetSecurityList()
-        {
-            NseURLs nseUrls = new NseURLs(DateTime.Now.AddDays(-1));
-            NseDailyData list = new NseDailyData();
-            string folder = Options.app.TmpFolder;
-            string date = DateTime.Now.ToString("ddMMyyyy");
-
-
-            string equityFile = $"{folder}/equity.csv";
-            string etfFile = $"{folder}/etf.csv";
-            string indexBhavFile = $"{folder}/indexBhav_{date}.csv";
-            string bhavZipFile = $"{folder}/bhav_{date}.csv.zip";
-
-            var t1 = fileDownloader.Download(nseUrls.EquityListUrl, equityFile);
-            var t2 = fileDownloader.Download(nseUrls.ETFListUrl, etfFile);
-            var t3 = fileDownloader.Download(nseUrls.IndexBhavUrl, indexBhavFile);
-            var t4 = fileDownloader.Download(nseUrls.BhavUrl, bhavZipFile);
-            await Task.WhenAll(t1, t2, t3, t4);
-            //Task.WaitAll(t1, t2, t3);
-
-            list.Equitys = csvParser.ParseEquityInformationFile(equityFile);
-            list.Etfs = csvParser.ParseETFInformationFile(etfFile);
-            list.IndexDailyData = csvParser.ParseIndexBhavFile(indexBhavFile);
-
-            list.Indexes = list.IndexDailyData.Select(x => new IndexInformation(x.IndexName))
-                                              .OrderBy(x => x.IndexName)
-                                              .Distinct()
-                                              .ToList();
-            Globals.Log.Info($"GetSecurityList() returning {list.ToString()}");
-            return list;
         }
     }
 }

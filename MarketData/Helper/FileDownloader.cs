@@ -59,7 +59,7 @@ namespace Helper
                 using (HttpResponseMessage response = await client.GetAsync(url))
                 using (HttpContent content = response.Content)
                 {
-                    // ... Read the string.
+                    // Read the data
                     var result = await content.ReadAsByteArrayAsync();
                     await File.WriteAllBytesAsync(filename, result);
                 }
