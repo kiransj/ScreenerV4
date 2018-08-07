@@ -21,6 +21,12 @@ namespace Helper
         }
     }
 
+    public class DbOptions
+    {
+        public string DBFolder { get; set; }
+        public string DBFile { get; set; }
+    }
+
     public class AppOptions
     {
         public bool CachingEnabled { get; set; } // Enable Caching
@@ -29,6 +35,7 @@ namespace Helper
         public string LogFileName { get; set;}
         public HttpClientOptions httpClient;
         public HttpServer httpServer;
+        public DbOptions dbOptions;
 
         public AppOptions()
         {

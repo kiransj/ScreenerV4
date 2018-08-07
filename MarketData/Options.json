@@ -1,6 +1,9 @@
 {
     "CachingEnabled": "false",
-    "DBFolder": "StockData",
+    "dbOptions": {
+        "DBFolder": "StockData",
+        "DBFile": "StockData.db"
+    },
     "TmpFolder": "tmp",
     "LogFileName": "tmp//debug.log",
     "httpOptions": {

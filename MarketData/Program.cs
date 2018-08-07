@@ -19,10 +19,6 @@ namespace MarketData
         static void Main(string[] args)
         {
             Globals.InitGlobals("Options.json");
-            //string data;
-            //fileDownloader.DownloadAsString(url.ETFListUrl, out data);
-            //Globals.Log.Info(data);
-
             Program p = new Program();
             p.DownloadTodayData();
         }

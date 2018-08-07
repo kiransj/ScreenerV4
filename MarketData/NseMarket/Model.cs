@@ -27,6 +27,16 @@ namespace MarketData.NseMarket
         public double FaceValue { get; set; }
     }
 
+    // Computed value from IndexBhav
+    public class IndexInformation
+    {
+        public string IndexName { get; set; }
+        public IndexInformation(string index)
+        {
+            IndexName = index;
+        }
+    }
+
     //https://www.nseindia.com/content/indices/ind_nifty500list.csv
     public class CompanyToIndustryMapping
     {
@@ -60,17 +70,17 @@ namespace MarketData.NseMarket
     {
         public string IndexName { get; set; }
         public DateTime IndexDate {get; set; }
-        public float OpenValue {get; set; }
-        public float HighValue {get; set; }
-        public float LowValue {get; set; }
-        public float CloseValue {get; set; }
-        public float PointsChange {get; set; }
-        public float PointsChangePct {get; set; }
-        public float Volume {get; set; }
-        public float TurnOver {get; set; }
-        public float PE {get; set; }
-        public float PB {get; set; }
-        public float DivYield {get; set; }
+        public double OpenValue {get; set; }
+        public double HighValue {get; set; }
+        public double LowValue {get; set; }
+        public double CloseValue {get; set; }
+        public double PointsChange {get; set; }
+        public double PointsChangePct {get; set; }
+        public double Volume {get; set; }
+        public double TurnOver {get; set; }
+        public double PE {get; set; }
+        public double PB {get; set; }
+        public double DivYield {get; set; }
     }
 
     // Information in https://www.nseindia.com/archives/equities/mto/MTO_DDMMYYYY.DAT
@@ -93,16 +103,16 @@ namespace MarketData.NseMarket
         public string Series {get; set; }
         public string Symbol {get; set; }
         public string Security {get; set; } //Company Name
-        public float PrevClosePrice {get; set; }
-        public float OpenPrice {get; set; }
-        public float HighPrice {get; set; }
-        public float LowPrice {get; set; }
-        public float ClosePrice {get; set; }
-        public float NetTradedValue {get; set; }
-        public float NetTradedQty {get; set; }
-        public float TotalTrades {get; set; }
-        public float High52Week {get; set; }
-        public float Low52Week {get; set; }
+        public double PrevClosePrice {get; set; }
+        public double OpenPrice {get; set; }
+        public double HighPrice {get; set; }
+        public double LowPrice {get; set; }
+        public double ClosePrice {get; set; }
+        public double NetTradedValue {get; set; }
+        public double NetTradedQty {get; set; }
+        public double TotalTrades {get; set; }
+        public double High52Week {get; set; }
+        public double Low52Week {get; set; }
         public string Underlying {get; set; }
     }
 
@@ -124,14 +134,5 @@ namespace MarketData.NseMarket
         public string Security { get; set; }
         public double High52week { get; set; }
         public double Low52week { get; set; }
-    }
-
-    public class IndexInformation
-    {
-        public string IndexName { get; set; }
-        public IndexInformation(string index)
-        {
-            IndexName = index;
-        }
     }
 }

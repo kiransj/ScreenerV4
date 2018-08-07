@@ -1,3 +1,4 @@
 MarketData/obj/*
 MarketData/bin/*
 MarketData/tmp/*
+*.db
