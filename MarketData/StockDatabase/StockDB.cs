@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -24,13 +25,13 @@ namespace MarketData.StockDatabase
         [Required]
         public string ISINNumber {get; set;}
         [Required]
-        public int FaceValue {get; set;}
+        public double FaceValue {get; set;}
         [Required]
         public int MarketLot {get; set;}
         [Required]
         public DateTime DateOfListing {get; set;}
         [Required]
-        public string PaidUpValue {get; set;}
+        public double PaidUpValue {get; set;}
         [Required]
         public bool IsETF { get; set; }
 
@@ -170,7 +171,7 @@ namespace MarketData.StockDatabase
         public string UpDown30Days { get; set;}
     }
 
-    public class StockDataContext : DbContext
+    class StockDataContext : DbContext
     {
         public DbSet<EquityInformationTable> CompanyInformation { get; set; }
         public DbSet<IndexInformationTable>  IndexInformation { get; set; }
@@ -189,7 +190,16 @@ namespace MarketData.StockDatabase
             if(Globals.Options != null)
             {
                 dbFilename = $"{Globals.Options.dbOptions.DBFolder}/{Globals.Options.dbOptions.DBFile}";
-                Globals.Log.Info($"DBFilename {dbFilename}");
+                if(!File.Exists(dbFilename))
+                {
+                    Globals.Log.Error($"DBFile {dbFilename} not found. Exiting with 1");
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    FileInfo s = new FileInfo(dbFilename);
+                    Globals.Log.Info($"DbFile '{dbFilename}', Size: {s.Length/1024}KB, Modified: {s.LastWriteTime}");
+                }
             }
         }
 

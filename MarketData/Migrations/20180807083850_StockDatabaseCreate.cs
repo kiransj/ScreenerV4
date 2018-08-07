@@ -31,10 +31,10 @@ namespace MarketData.Migrations
                     Symbol = table.Column<string>(nullable: false),
                     CompanyName = table.Column<string>(nullable: false),
                     ISINNumber = table.Column<string>(nullable: false),
-                    FaceValue = table.Column<int>(nullable: false),
+                    FaceValue = table.Column<double>(nullable: false),
                     MarketLot = table.Column<int>(nullable: false),
                     DateOfListing = table.Column<DateTime>(nullable: false),
-                    PaidUpValue = table.Column<string>(nullable: false),
+                    PaidUpValue = table.Column<double>(nullable: false),
                     IsETF = table.Column<bool>(nullable: false),
                     Underlying = table.Column<string>(nullable: true),
                     Series = table.Column<string>(nullable: true)

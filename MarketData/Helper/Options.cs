@@ -8,6 +8,7 @@ namespace Helper
     public class HttpServer
     {
         public int Port { get; set; }
+        public HttpServer() => Port = 6001;
     }
     public class HttpClientOptions
     {
@@ -25,14 +26,18 @@ namespace Helper
     {
         public string DBFolder { get; set; }
         public string DBFile { get; set; }
+        public DbOptions()
+        {
+            DBFolder = null;
+            DBFile = null;
+        }
     }
 
     public class AppOptions
     {
         public bool CachingEnabled { get; set; } // Enable Caching
-        public string DBFolder { get; set; } // Database filename
         public string TmpFolder { get; set; } //Folder to unzip files
-        public string LogFileName { get; set;}
+        public string LogFileName { get; set; }
         public HttpClientOptions httpClient;
         public HttpServer httpServer;
         public DbOptions dbOptions;
@@ -40,16 +45,16 @@ namespace Helper
         public AppOptions()
         {
             CachingEnabled = false;
-            DBFolder = null;
             TmpFolder = null;
             httpClient = new HttpClientOptions();
+            dbOptions = new DbOptions();
+            httpServer = new HttpServer();
         }
 
         public override string ToString()
         {
             string output = "{\n";
             output += $"\t\tCachingEnabled: {CachingEnabled}\n";
-            output += $"\t\tDbFilename: {DBFolder}\n";
             output += $"\t\tTmpFolder: {TmpFolder}\n";
             output += $"\t\tLogFileName: {LogFileName}\n";
             output += "\t\thttpOptions: {\n";
@@ -67,7 +72,7 @@ namespace Helper
         private static AppOptions options = null;
         private static string fileName = "";
         private static Logger log = Logger.GetLoggerInstance();
-        static public AppOptions app { get { return options; }}
+        static public AppOptions app { get { return options; } }
         Options()
         {
 
@@ -75,11 +80,11 @@ namespace Helper
 
         static public void SetOptions(string filename)
         {
-            if(options == null)
+            if (options == null)
             {
-                lock(padlock)
+                lock (padlock)
                 {
-                    if(options == null)
+                    if (options == null)
                     {
                         options = JsonConvert.DeserializeObject<AppOptions>(File.ReadAllText(filename));
                         Options.fileName = filename;

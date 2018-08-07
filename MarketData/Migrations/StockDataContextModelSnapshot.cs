@@ -99,7 +99,7 @@ namespace MarketData.Migrations
 
                     b.Property<DateTime>("DateOfListing");
 
-                    b.Property<int>("FaceValue");
+                    b.Property<double>("FaceValue");
 
                     b.Property<string>("ISINNumber")
                         .IsRequired();
@@ -108,8 +108,7 @@ namespace MarketData.Migrations
 
                     b.Property<int>("MarketLot");
 
-                    b.Property<string>("PaidUpValue")
-                        .IsRequired();
+                    b.Property<double>("PaidUpValue");
 
                     b.Property<string>("Series");
 

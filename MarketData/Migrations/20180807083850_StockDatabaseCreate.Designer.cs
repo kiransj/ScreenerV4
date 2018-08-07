@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketData.Migrations
 {
     [DbContext(typeof(StockDataContext))]
-    [Migration("20180807065648_StockDatabaseCreate")]
+    [Migration("20180807083850_StockDatabaseCreate")]
     partial class StockDatabaseCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,7 +101,7 @@ namespace MarketData.Migrations
 
                     b.Property<DateTime>("DateOfListing");
 
-                    b.Property<int>("FaceValue");
+                    b.Property<double>("FaceValue");
 
                     b.Property<string>("ISINNumber")
                         .IsRequired();
@@ -110,8 +110,7 @@ namespace MarketData.Migrations
 
                     b.Property<int>("MarketLot");
 
-                    b.Property<string>("PaidUpValue")
-                        .IsRequired();
+                    b.Property<double>("PaidUpValue");
 
                     b.Property<string>("Series");
 
