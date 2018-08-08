@@ -6,7 +6,7 @@ using MarketData.NseMarket;
 
 namespace MarketData.StockDatabase
 {
-    public class StockDBApi
+    public partial class StockDBApi
     {
         readonly DateTime FirstDay = new DateTime(2016, 1, 1);
         private StockDataContext stockDatabase;

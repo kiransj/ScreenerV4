@@ -50,12 +50,13 @@ namespace MarketData
             }
         }
 
-
         static void Main(string[] args)
         {
             Globals.InitGlobals("Options.json");
-            Program p = new Program();
-            p.StockDB();
+            StockServices ss = new StockServices();
+            var t = ss.UpdateStockDataToToday();
+            t.Wait();
+            Globals.Log.Info($"Updated data for {t.Result} days");
         }
     }
 }
