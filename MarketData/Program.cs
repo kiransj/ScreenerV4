@@ -10,23 +10,44 @@ namespace MarketData
     {
         static Logger log = Logger.GetLoggerInstance();
 
-        NseDailyData DownloadTodayData()
+        NseDailyData DownloadTodayData(DateTime date)
         {
             MarketAPI api = new MarketAPI();
-            var task = api.GetDailyData(DateTime.Now.AddDays(-1));
+            var task = api.GetDailyData(date);
             task.Wait();
-            Globals.Log.Info(task.Result.ToString());
+            if(task.Result != null)
+                Globals.Log.Info(task.Result.ToString());
             return task.Result;
         }
 
         void StockDB()
         {
             StockDBApi api = new StockDBApi();
-            var data = DownloadTodayData();
+            var date = new DateTime(2018, 01, 31);
+            for(int i = 0; i < 360; i++)
+            {
+                if(i >= DateTime.Now.DayOfYear)
+                    break;
 
-            int count = api.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
-            count += api.AddBhavData(data.BhavData, data.deliveryPosition, data.IndexBhavData);
-            Globals.Log.Info($"Updated {count} rows");
+                var date1 = date.AddDays(i);
+                if(!(date1.DayOfWeek == DayOfWeek.Saturday || date1.DayOfWeek == DayOfWeek.Sunday))
+                {
+                    Globals.Log.Error($"Downloading data for {date1} {i}");
+                    var data = DownloadTodayData(date1);
+                    if(data != null)
+                    {
+                        int count = api.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
+                        count += api.AddBhavData(date1, data.BhavData, data.deliveryPosition,
+                                                                            data.IndexBhavData, data.circuitBreaker,
+                                                                            data.highLow52Week);
+                        Globals.Log.Info($"Updated {count} rows");
+                    }
+                    else
+                    {
+                        Globals.Log.Error($"Data does not exists for {date1}");
+                    }
+                }
+            }
         }
 
 

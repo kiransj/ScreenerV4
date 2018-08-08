@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketData.Migrations
 {
     [DbContext(typeof(StockDataContext))]
-    [Migration("20180807094354_StockDatabaseCreate")]
-    partial class StockDatabaseCreate
+    [Migration("20180808051158_SecondUpdate")]
+    partial class SecondUpdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -144,6 +144,9 @@ namespace MarketData.Migrations
                     b.Property<int>("Day");
 
                     b.Property<double>("High");
+
+                    b.Property<string>("HighLow")
+                        .IsRequired();
 
                     b.Property<double>("Last");
 

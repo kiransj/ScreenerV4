@@ -117,36 +117,38 @@ namespace MarketData.NseMarket
             urlToFileMapping[nseUrls.CompanyToIndustryMappingUrl] =  $"{folder}/mapping.csv";
             urlToFileMapping[nseUrls.DeliveryPositionUrL] =  $"{folder}/MTO.csv";
 
-#if false
             // Delete the folder if it exists then create the folder
-            if(Directory.Exists(folder)) {
-                Globals.Log.Info($"Deleting folder {folder}");
-                Directory.Delete(folder, true);
-            }
-            Globals.Log.Info($"Creating folder {folder}");
-            Directory.CreateDirectory(folder);
+            if(!Directory.Exists(folder)) {
+                Globals.Log.Info($"Creating folder {folder}");
+                Directory.CreateDirectory(folder);
 
-            Globals.Log.Info($"Download the {urlToFileMapping.Count}  URL's parallely.");
-            List<Task> task = new List<Task>();
-            foreach(var item in urlToFileMapping)
-            {
-                task.Add(fileDownloader.Download(item.Key, item.Value));
+                Globals.Log.Info($"Download the {urlToFileMapping.Count}  URL's parallely.");
+                List<Task> task = new List<Task>();
+                foreach(var item in urlToFileMapping)
+                {
+                    task.Add(fileDownloader.Download(item.Key, item.Value));
+                }
+                await Task.WhenAll(task.ToArray());
             }
-            await Task.WhenAll(task.ToArray());
-
-            Globals.Log.Info($"Extracting Zip files to {folder}");
-            ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.BhavUrl], folder, true);
-            ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.PRZipfileUrl], folder, true);
-#endif
 
             NseDailyData dailyData = new NseDailyData(date);
 
             // Parse all the downloaded Data
+            dailyData.deliveryPosition = csvParser.ParseDeliveryPositionFile(urlToFileMapping[nseUrls.DeliveryPositionUrL]);
+            dailyData.IndexBhavData = csvParser.ParseIndexBhavFile(urlToFileMapping[nseUrls.IndexBhavUrl]);
+            if(dailyData.deliveryPosition.Count == 0)
+            {
+                Globals.Log.Error($"No data for {date}");
+                return null;
+            }
+
+            Globals.Log.Info($"Extracting Zip files to {folder}");
+            ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.BhavUrl], folder, true);
+            ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.PRZipfileUrl], folder, true);
+
+            dailyData.CompanyToIndustry = csvParser.ParseCompanyToIndustryMappingFile(urlToFileMapping[nseUrls.CompanyToIndustryMappingUrl]);
             dailyData.Equitys = csvParser.ParseEquityInformationFile(urlToFileMapping[nseUrls.EquityListUrl]);
             dailyData.Etfs = csvParser.ParseETFInformationFile(urlToFileMapping[nseUrls.ETFListUrl]);
-            dailyData.IndexBhavData = csvParser.ParseIndexBhavFile(urlToFileMapping[nseUrls.IndexBhavUrl]);
-            dailyData.deliveryPosition = csvParser.ParseDeliveryPositionFile(urlToFileMapping[nseUrls.DeliveryPositionUrL]);
-            dailyData.CompanyToIndustry = csvParser.ParseCompanyToIndustryMappingFile(urlToFileMapping[nseUrls.CompanyToIndustryMappingUrl]);
 
             //Parse the unzipped files
             dailyData.BhavData = csvParser.ParseBhavFile($"{folder}/{nseUrls.BhavFilename}");

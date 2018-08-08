@@ -63,6 +63,12 @@ namespace MarketData.NseMarket
         public DateTime TimeStamp { get; set; }
         public long TotalTrades { get; set; }
         public string ISINNumber { get; set; }
+
+        public double ChangePct {
+            get {
+                return Math.Round(100 * (Close - PrevClose)/PrevClose, 2);
+            }
+        }
     }
 
     //https://www.nseindia.com/content/indices/ind_close_all_02082018.csv

@@ -78,12 +78,12 @@ namespace MarketData.StockDatabase
             return et;
         }
 
-        private IndexBhavTable IndexBhavToTable(IndexBhav bhav, int indexId)
+        private IndexBhavTable IndexBhavToTable(IndexBhav bhav, DateTime date, int indexId)
         {
             var indexBhav = new IndexBhavTable();
 
             indexBhav.IndexId = indexId;
-            indexBhav.Day = DateToDay(bhav.IndexDate);
+            indexBhav.Day = DateToDay(date);
             indexBhav.Open = bhav.OpenValue;
             indexBhav.Close = bhav.CloseValue;
             indexBhav.High = bhav.HighValue;
@@ -99,12 +99,12 @@ namespace MarketData.StockDatabase
             return indexBhav;
         }
 
-        private EquityBhavTable EquityBhavToTable(Bhav bhav, int companyId, long deliveredQty)
+        private EquityBhavTable EquityBhavToTable(Bhav bhav, DateTime date, int companyId, long deliveredQty)
         {
             var equityBhav = new EquityBhavTable();
 
             equityBhav.CompanyId = companyId;
-            equityBhav.Day = DateToDay(bhav.TimeStamp);
+            equityBhav.Day = DateToDay(date);
             equityBhav.Close = bhav.Close;
             equityBhav.PrevClose = bhav.PrevClose;
             equityBhav.TotalTradedQty = bhav.TotTradedQty;
@@ -114,34 +114,49 @@ namespace MarketData.StockDatabase
             return equityBhav;
         }
 
-        private EquityOHLCTable EquityOHLCToTable(Bhav bhav, int companyId)
+        private EquityOHLCTable EquityOHLCToTable(Bhav bhav, DateTime date, int companyId, string highLow)
         {
             var ohlc = new EquityOHLCTable();
             ohlc.CompanyId = companyId;
-            ohlc.Day = DateToDay(bhav.TimeStamp);
+            ohlc.Day = DateToDay(date);
             ohlc.Close = bhav.Close;
             ohlc.High = bhav.High;
             ohlc.Last = bhav.Last;
             ohlc.Low = bhav.Low;
             ohlc.Open = bhav.Open;
             ohlc.PrevClose = bhav.PrevClose;
-
+            ohlc.HighLow = highLow;
             return ohlc;
         }
 
-        public int AddBhavData(List<Bhav> bhav, List<DeliveryPosition> deliveryPosition, List<IndexBhav> indexBhav)
+        public int AddBhavData(DateTime date, List<Bhav> bhav,
+                                             List<DeliveryPosition> deliveryPosition,
+                                             List<IndexBhav> indexBhav,
+                                             List<CircuitBreaker> circuitBreaker,
+                                             List<HighLow52week> highLow52Week)
         {
             Globals.Log.Info($"Updating Bhav/IndexBhav for date {bhav[0].TimeStamp} to DB");
             var mapping = stockDatabase.CompanyInformation.ToDictionary(x => x.Symbol, x => x.CompanyId);
             var dp_mapping = deliveryPosition.Where(x => x.Series == "EQ" || x.Series == "BE").ToDictionary(x => x.Symbol, x => x);
+            int count = 0;
 
-            // Find new companies and add it to DB
+            var mappingCircuitBreaker = new Dictionary<string, string>();
+            //Circuit Breaker Mapping
+            foreach(var item in circuitBreaker)
+            {
+                if(mappingCircuitBreaker.ContainsKey(item.Symbol))
+                    mappingCircuitBreaker[item.Symbol] += item.HighLow;
+                else
+                    mappingCircuitBreaker.Add(item.Symbol, item.HighLow);
+            }
+
+            // Find new companies which are not listed in Equity list and add it to DB
             foreach(var item in bhav.Where(x => x.Series == "EQ" || x.Series == "BE"))
             {
                 if(!mapping.ContainsKey(item.Symbol))
                 {
                     Globals.Log.Info($"Adding unknown company {item.Symbol}");
-                    stockDatabase.CompanyInformation.Add(EquityInformationOfUnknown(item.Symbol, item.Series, item.ISINNumber));
+                    stockDatabase.CompanyInformation.Add(EquityInformationOfUnknown(item.Symbol, item.Series, $"{DateTime.Now.ToString()}_{count++}"));
                 }
             }
             stockDatabase.SaveChanges();
@@ -151,17 +166,41 @@ namespace MarketData.StockDatabase
             foreach(var item in bhav.Where(x => x.Series == "EQ" || x.Series == "BE"))
             {
                 long deliveredQty = dp_mapping.ContainsKey(item.Symbol) ? dp_mapping[item.Symbol].DeliverableQty : -1;
-                stockDatabase.EquityBhav.Add(EquityBhavToTable(item, mapping[item.Symbol], deliveredQty));
-                stockDatabase.EquityOHLC.Add(EquityOHLCToTable(item, mapping[item.Symbol]));
+                stockDatabase.EquityBhav.Add(EquityBhavToTable(item, date, mapping[item.Symbol], deliveredQty));
+                stockDatabase.EquityOHLC.Add(EquityOHLCToTable(item, date, mapping[item.Symbol],
+                                                               mappingCircuitBreaker.ContainsKey(item.Symbol) ? mappingCircuitBreaker[item.Symbol] : ""));
             }
 
             var indexMapping = stockDatabase.IndexInformation.ToDictionary(x => x.IndexName, x => x.IndexId);
             foreach(var item in indexBhav.OrderBy(x => x.IndexName))
             {
                 if(indexMapping.ContainsKey(item.IndexName))
-                    stockDatabase.IndexBhav.Add(IndexBhavToTable(item, indexMapping[item.IndexName]));
+                    stockDatabase.IndexBhav.Add(IndexBhavToTable(item, date, indexMapping[item.IndexName]));
             }
 
+            var highLow52 = highLow52Week.Where(x => x.Series == "EQ" || x.Series == "BE").ToDictionary(x => mapping[x.Symbol], x => x);
+            var bhavDict = bhav.Where(x => x.Series == "EQ" || x.Series == "BE").ToDictionary(x => x.Symbol, x => (x.ChangePct > 0 ? "U" : "D"));
+            foreach(var item in stockDatabase.HighLow52Week)
+            {
+                if(highLow52.ContainsKey(item.CompanyId))
+                {
+                    var t = highLow52[item.CompanyId];
+                    item.High = t.High52week;
+                    item.Low = t.Low52week;
+                    item.UpDown30Days += bhavDict.ContainsKey(t.Symbol) ? bhavDict[t.Symbol] : "";
+                    highLow52.Remove(item.CompanyId);
+                }
+            }
+
+            foreach(var item in highLow52)
+            {
+                stockDatabase.HighLow52Week.Add(new HighLow52WeekTable() {
+                    CompanyId = item.Key,
+                    High = item.Value.High52week,
+                    Low = item.Value.Low52week,
+                    UpDown30Days = bhavDict.ContainsKey(item.Value.Symbol) ? bhavDict[item.Value.Symbol] : ""
+                });
+            }
             return stockDatabase.SaveChanges();
         }
 

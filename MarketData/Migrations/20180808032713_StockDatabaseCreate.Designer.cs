@@ -3,14 +3,16 @@ using System;
 using MarketData.StockDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MarketData.Migrations
 {
     [DbContext(typeof(StockDataContext))]
-    partial class StockDataContextModelSnapshot : ModelSnapshot
+    [Migration("20180808032713_StockDatabaseCreate")]
+    partial class StockDatabaseCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,9 +144,6 @@ namespace MarketData.Migrations
                     b.Property<int>("Day");
 
                     b.Property<double>("High");
-
-                    b.Property<string>("HighLow")
-                        .IsRequired();
 
                     b.Property<double>("Last");
 

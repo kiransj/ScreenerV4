@@ -111,6 +111,8 @@ namespace MarketData.StockDatabase
         public double Last { get; set; }
         [Required]
         public double PrevClose { get; set; }
+        [Required]
+        public string HighLow { get; set;}
     }
 
     public class IndexBhavTable
