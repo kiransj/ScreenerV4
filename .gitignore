@@ -2,3 +2,7 @@ MarketData/obj/*
 MarketData/bin/*
 MarketData/tmp/*
 *.db
+Vue/bin/*
+Vue/node_modules/*
+Vue/node_modules/.*
+Vue/obj/*
