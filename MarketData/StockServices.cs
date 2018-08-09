@@ -54,5 +54,18 @@ namespace MarketData
             var index = dbApi.GetListOfIndex();
             return (company, index);
         }
+
+        public (List<EquityBhavTable> bhav, List<EquityOHLCTable> ohlc, List<HighLow52WeekTable> highLow) GetStockReport(DateTime date)
+        {
+            var result1 = dbApi.GetStockData(date);
+            var result2 = dbApi.GetOHLCData(date);
+            var result3 = dbApi.GetHighLow52Week();
+            return (result1, result2, result3);
+        }
+
+        public Dictionary<int, string> GetCompanyIdToSymbol()
+        {
+            return dbApi.GetCompanyIdToSymbolMapping();
+        }
     }
 }

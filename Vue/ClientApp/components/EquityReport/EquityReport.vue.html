@@ -1,6 +1,38 @@
 <template>
     <div>
-        <h2>Report</h2>
+        <div class="header">
+            <h2>Daily Report</h2>
+        </div>
+        <div class="row"  style="overflow: scroll; overflow-x: auto; height: 80vh;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Price</th>
+                        <th>PrevPrice</th>
+                        <th>DeliveredQ </th>
+                        <th>TradedQ</th>
+                        <th>TradedV</th>
+                        <th>52H</th>
+                        <th>52L</th>
+                        <th>UpDown</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in stockReport">
+                        <td>{{item.symbol}}</td>
+                        <td>{{item.close}}</td>
+                        <td>{{item.prevClose}}</td>
+                        <td>{{item.totDelQty}}</td>
+                        <td>{{item.totQty}}</td>
+                        <td>{{item.totTraVal}}</td>
+                        <td>{{item.high52week}}</td>
+                        <td>{{item.low52week}}</td>
+                        <td>{{item.upDown}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 

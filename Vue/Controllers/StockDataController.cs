@@ -25,5 +25,19 @@ namespace vue.Controllers
             ListOfCompanyIndex list = new ListOfCompanyIndex(result.Companies, result.Indexes);
             return Ok(list);
         }
+
+        [HttpGet("[action]")]
+        public IActionResult GetStockReport(DateTime date)
+        {
+            var result = StockReport.GetStockReport(date);
+            return Ok(result);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult GetLastestStockReport()
+        {
+            var result = StockReport.GetStockReport(stockService.GetLastUpdatedDate());
+            return Ok(result);
+        }
     }
 }

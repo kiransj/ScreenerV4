@@ -36,7 +36,7 @@ let list:ListOfCompanyIndex = new ListOfCompanyIndex();
 @Component
 export default class ListComponent extends Vue {
     display_flag: boolean = false;
-    list:ListOfCompanyIndex = <ListOfCompanyIndex>{};
+    list:ListOfCompanyIndex = new ListOfCompanyIndex();
     display:string = "";
     constructor() {
         super();
@@ -53,6 +53,9 @@ export default class ListComponent extends Vue {
             .then(response => response.json() as Promise<ListOfCompanyIndex>)
             .then(data => {
                 list = this.list = data;
+                list.companyList = this.list.companyList = data.companyList.sort((left, right): number => (left.companyName.localeCompare(right.companyName)));
+                list.etfList = this.list.etfList = data.etfList.sort((left, right): number => (left.underlying.localeCompare(right.underlying)));
+                list.indexList = this.list.indexList = data.indexList.sort((left, right): number => (left.localeCompare(right)));
                 this.display_flag = true;
             });
         }
