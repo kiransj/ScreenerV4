@@ -7,6 +7,7 @@ Vue.use(VueRouter);
 const routes = [
     { path: '/', component: require('./components/Home/Home.vue.html') },
     { path: '/Equity/Report', component: require('./components/EquityReport/EquityReport.vue.html') },
+    { path: '/List', component: require('./components/List/List.vue.html') },
 ];
 
 new Vue({

@@ -5,6 +5,7 @@ using MarketData.NseMarket;
 using MarketData.StockDatabase;
 using Helper;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace MarketData
 {
@@ -47,9 +48,11 @@ namespace MarketData
             return updatedDays;
         }
 
-        public void GetStockData(DateTime date)
+        public (List<EquityInformationTable> Companies, List<IndexInformationTable> Indexes) GetListOfEquityIndex()
         {
-
+            var company = dbApi.GetListOfEquity();
+            var index = dbApi.GetListOfIndex();
+            return (company, index);
         }
     }
 }

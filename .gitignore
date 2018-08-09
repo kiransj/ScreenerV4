@@ -6,3 +6,5 @@ Vue/bin/*
 Vue/node_modules/*
 Vue/node_modules/.*
 Vue/obj/*
+Vue/wwwroot/*
+OtherFiles/*

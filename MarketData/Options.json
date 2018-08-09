@@ -1,16 +1,16 @@
 {
     "CachingEnabled": "false",
     "dbOptions": {
-        "DBFolder": "StockData",
+        "DBFolder": "C:\\source\\ScreenerV4\\OtherFiles\\StockData",
         "DBFile": "StockData.db"
     },
-    "TmpFolder": "tmp",
-    "LogFileName": "tmp//debug.log",
+    "TmpFolder": "C:\\source\\ScreenerV4\\OtherFiles\\tmp",
+    "LogFileName": "C:\\source\\ScreenerV4\\OtherFiles\\debug.log",
     "httpOptions": {
         "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
         "Host": "www.nseindia.com"
     },
     "httpServer": {
-        "Port": 6060
+        "Port": 6001
     }
 }

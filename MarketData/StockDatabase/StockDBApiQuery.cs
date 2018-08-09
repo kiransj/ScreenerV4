@@ -56,5 +56,17 @@ namespace MarketData.StockDatabase
             Globals.Log.Debug($"Querying database for Indexdata for date {date.ToString("dd-MMM-yyyy")}");
             return stockDatabase.IndexBhav.Where(x => x.Day == day).ToList();
         }
+
+        public List<EquityInformationTable> GetListOfEquity()
+        {
+            Globals.Log.Debug($"Querying database for List of companies");
+            return stockDatabase.CompanyInformation.ToList();
+        }
+
+        public List<IndexInformationTable> GetListOfIndex()
+        {
+            Globals.Log.Debug($"Querying database for List of Index");
+            return stockDatabase.IndexInformation.ToList();
+        }
     }
 }
