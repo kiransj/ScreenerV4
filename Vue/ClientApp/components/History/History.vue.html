@@ -1,0 +1,42 @@
+<template>
+    <div>
+        <h2>
+            <center>History for {{symbol}}</center>
+        </h2>
+        <div>
+            <div  id="volumePlot"></div>
+            <div  id="pricePlot"></div>
+        </div>
+
+        <div class="row" style="overflow: scroll; overflow-x: auto; height: 50vh; padding-top: 5px">
+            <table class="table table-striped table-bordered table-hover table-fixed">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Close</th>
+                        <th scope="col">Change</th>
+                        <th scope="col">Qty </th>
+                        <th scope="col">Delivered Qty</th>
+                        <th scope="col">Total Trades</th>
+                        <th scope="col">Traded Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in stockHistory">
+                        <td>{{item.date | DateToString}}</td>
+                        <td>{{item.close}}</td>
+                        <td>
+                            <font v-bind:color="item.change > 0 ? 'Green':'Red'">{{item.change}}</font>
+                        </td>
+                        <td>{{item.totQty}}</td>
+                        <td>{{item.totDelQty}}</td>
+                        <td>{{item.totTrades}}</td>
+                        <td>{{item.totTraVal}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+
+<script src="./History.ts"></script>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Helper;
 using MarketData;
 using Microsoft.AspNetCore.Mvc;
 using Vue.Controllers;
@@ -38,6 +39,15 @@ namespace vue.Controllers
         {
             var result = StockReport.GetStockReport(stockService.GetLastUpdatedDate());
             return Ok(result);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult GetStockHistory(string symbol)
+        {
+            byte[] encodedDataAsBytes = System.Convert.FromBase64String(symbol);
+            string returnValue = System.Text.ASCIIEncoding.ASCII.GetString(encodedDataAsBytes);
+            Globals.Log.Info($"History for {returnValue}");
+            return Ok(StockReport.GetStockHistory(returnValue));
         }
     }
 }

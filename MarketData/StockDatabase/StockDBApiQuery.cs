@@ -42,6 +42,20 @@ namespace MarketData.StockDatabase
             Globals.Log.Debug($"Querying database for companyId -> symbol mapping.");
             return stockDatabase.CompanyInformation.ToDictionary(x => x.CompanyId, x => x.Symbol);
         }
+        public List<EquityBhavTable> GetHistory(string symbol)
+        {
+            try
+            {
+                Globals.Log.Debug($"Querying database for history of {symbol}");
+                var companyId = stockDatabase.CompanyInformation.Where(x => x.Symbol == symbol).Select(x => x.CompanyId).First();
+                return stockDatabase.EquityBhav.Where(x => x.CompanyId == companyId).OrderByDescending(x => x.Day).ToList();
+            }
+            catch(Exception)
+            {
+                Globals.Log.Error($"Querying database for history of {symbol} failed as symbol not found.");
+                return new List<EquityBhavTable>();
+            }
+        }
 
         public Dictionary<int, string> GetIndexIdToSymbolMapping()
         {

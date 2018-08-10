@@ -13,7 +13,7 @@
                         <th scope="col">Index</th>
                         <th scope="col">Symbol</th>
                         <th scope="col">Price</th>
-                        <th scope="col">PrevPrice</th>
+                        <th scope="col">Change</th>
                         <th scope="col">DeliveredQ </th>
                         <th scope="col">TradedQ</th>
                         <th scope="col">TradedV</th>
@@ -34,9 +34,9 @@
                     </tr>
                     <tr v-for="(item, index) in stockReport.slice(startIndex)" v-if="index < elementsPerPage">
                         <td>{{index+startIndex+1}}</td>
-                        <td>{{item.symbol}}</td>
+                        <td><router-link v-bind:to='/history/+item.symbol'> {{item.symbol}} </router-link></td>
                         <td>{{item.close}}</td>
-                        <td>{{item.prevClose}}</td>
+                        <td><font v-bind:color="item.change > 0 ? 'Green':'Red'">{{item.change}}</font></td>
                         <td>{{item.totDelQty}}</td>
                         <td>{{item.totQty}}</td>
                         <td>{{item.totTraVal}}</td>

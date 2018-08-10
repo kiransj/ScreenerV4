@@ -63,6 +63,22 @@ namespace MarketData
             return (result1, result2, result3);
         }
 
+        public List<EquityBhavTable> GetStockHistory(string symbol)
+        {
+            return dbApi.GetHistory(symbol);
+        }
+
+        public DateTime DayToDate(int day)
+        {
+            return dbApi.DayToDate(day);
+        }
+
+        public Dictionary<int, string> GetSymbolToCompanyId()
+        {
+            return dbApi.GetCompanyIdToSymbolMapping();
+        }
+
+
         public Dictionary<int, string> GetCompanyIdToSymbol()
         {
             return dbApi.GetCompanyIdToSymbolMapping();

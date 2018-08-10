@@ -47,12 +47,11 @@ namespace Vue.Controllers
             IndexList = index.Select(x => x.IndexName).ToList();
         }
     }
-
-    public class StockReport
+    public class StockDailyReport
     {
         public string symbol;
         public double close;
-        public double prevClose;
+        public double change;
         public double totQty;
         public double totTrades;
         public double totTraVal;
@@ -62,28 +61,64 @@ namespace Vue.Controllers
         public double high52week;
         public double low52week;
 
-        public StockReport()
+        public StockDailyReport()
         {
             high52week = -1;
             low52week = -1;
             upDown = "";
             circuitBreaker = "";
         }
+    }
 
-        static public List<StockReport> GetStockReport(DateTime date)
+    public class StockHistory
+    {
+        public DateTime date;
+        public double close;
+        public double change;
+        public double totQty;
+        public double totTrades;
+        public double totTraVal;
+        public double totDelQty;
+    }
+
+    public class StockReport
+    {
+        static List<EquityBhavTable> bhav;
+        static List<EquityOHLCTable> ohlc;
+        static List<HighLow52WeekTable> highLow;
+        static Dictionary<int, string> mapping;
+
+        static public List<StockHistory> GetStockHistory(string symbol)
         {
             StockServices stockService = new StockServices();
-            var (bhav, ohlc, highLow) = stockService.GetStockReport(date);
+            var result = stockService.GetStockHistory(symbol);
+
+            var history = result.Select(item => new StockHistory() {
+                                   change = Math.Round(100.0 * (item.Close - item.PrevClose)/item.PrevClose, 2),
+                                   date = stockService.DayToDate(item.Day),
+                                   close = item.Close,
+                                   totDelQty = item.TotalDeliveredQty,
+                                   totTrades = item.TotalTradedQty,
+                                   totTraVal = item.TotalTradedValue,
+                                   totQty = item.TotalTradedQty
+                                }).ToList();
+            return history;
+        }
+
+        static public List<StockDailyReport> GetStockReport(DateTime date)
+        {
+            StockServices stockService = new StockServices();
+            (bhav, ohlc, highLow) = stockService.GetStockReport(date);
             Dictionary<int, string> circuitBreaker = ohlc.Select(x => new { x.CompanyId, x.HighLow}).ToDictionary(x => x.CompanyId, x => x.HighLow);
             Dictionary<int, HighLow52WeekTable> hl = highLow.ToDictionary(x => x.CompanyId, x => x);
-            var mapping = stockService.GetCompanyIdToSymbol();
-            List<StockReport> report = new List<StockReport>();
+            mapping = stockService.GetCompanyIdToSymbol();
+            List<StockDailyReport> report = new List<StockDailyReport>();
 
             foreach(var item in bhav)
             {
                 if(mapping.ContainsKey(item.CompanyId))
                 {
-                    StockReport sr = new StockReport();
+                    StockDailyReport sr = new StockDailyReport();
                     sr.symbol = mapping[item.CompanyId];
                     sr.totDelQty = item.TotalDeliveredQty;
                     sr.totQty = item.TotalTradedQty;
@@ -101,7 +136,7 @@ namespace Vue.Controllers
                         sr.upDown = new String(array);
                         sr.upDown = "#" + (sr.upDown.Length > 30 ? sr.upDown.Substring(0, 30) : sr.upDown);
                     }
-                    sr.prevClose = item.PrevClose;
+                    sr.change = Math.Round(100 * (item.Close - item.PrevClose)/item.PrevClose, 2);
 
                     report.Add(sr);
                 }

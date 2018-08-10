@@ -6,7 +6,7 @@ interface StockReport
 {
     symbol:string;
     close:number;
-    prevClose:number;
+    change:number;
     totQty:number;
     totTrades:number;
     totTraVal:number;

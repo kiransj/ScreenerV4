@@ -25,7 +25,7 @@ namespace MarketData.StockDatabase
             return (date - FirstDay).Days;
         }
 
-        private DateTime DayToDate(int day)
+        public DateTime DayToDate(int day)
         {
             return FirstDay.AddDays(day);
         }
