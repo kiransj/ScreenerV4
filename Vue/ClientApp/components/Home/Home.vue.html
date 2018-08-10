@@ -1,7 +1,47 @@
 <template>
-        <div>
-            <h2>Home</h2>
+    <div>
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="card" style="width: 18rem; background-color: lightcoral">
+                    <div class="card-body">
+                        <h5 class="card-title">List of All</h5>
+                        <p class="card-text">List of Companies, ETF's and Index's</p>
+                        <router-link class="btn btn-success" to="/List">Show List</router-link>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="card" style="width: 18rem; background-color: lightblue">
+                    <div class="card-body">
+                        <h5 class="card-title">Daily Report For Equities</h5>
+                        <p class="card-text">List of Equities and it's price, volume, 52 week high/low etc</p>
+                        <router-link class="btn btn-success" to="/Equity/Report">Report</router-link>
+                        <router-link class="btn btn-success" to="/Equity/Report">Volatility </router-link>
+                    </div>
+                </div>
+            </div>
         </div>
-    </template>
+        <div class="row" style="padding-top: 15px">
+            <div class="col-sm-2">
+                <div class="card" style="width: 18rem; background-color: lightblue">
+                    <div class="card-body">
+                        <h5 class="card-title">Daily Report For Index's</h5>
+                        <p class="card-text">List of Index's and it's price, volume, 52 week high/low etc</p>
+                        <router-link class="btn btn-success" to="/Equity/Report">Show Index's</router-link>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="card" style="width: 18rem; background-color: lightblue">
+                    <div class="card-body">
+                        <h5 class="card-title">Daily Report For ETF's</h5>
+                        <p class="card-text">List of ETF's and it's price, volume, 52 week high/low etc</p>
+                        <router-link class="btn btn-success" to="/Equity/Report">Show ETF's</router-link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
 
-    <script src="./Home.ts"></script>
+<script src="./Home.ts"></script>

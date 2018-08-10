@@ -1,31 +1,8 @@
 <template>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#NavbarContent">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <router-link class="NavBarLine navbar-brand" to="/"> StockScreener </router-link>
-
-            </div>
-            <div class="NavBarLine">
-                <ul class="nav navbar-nav">
-                    <li><router-link to="/List">List</router-link></li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Equity<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><router-link to="/Equity/Report">Daily Report</router-link></li>
-                            <li><router-link to="/Equity/Volatility">Volatility</router-link></li>
-                        </ul>
-                    </li>
-                    <li><router-link to="/ETF/Report">ETF</router-link></li>
-                    <li><router-link to="/Index/Report">Index</router-link></li>
-                </ul>
-            </div>
-        </div>
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
+        <router-link class="navbar-brand" to="/">Stock Screener</router-link>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
     </nav>
 </template>
-
-<style src="./navmenu.css" />

@@ -1,22 +1,21 @@
 <template>
     <div>
-        <div class="header">
+        <div class="header" style="padding-bottom: 10px">
             <div class="row">
-                <div class="col-sm-4">
-                    <div class="btn-group">
-                        <button  class="btn btn-primary btn-lg" v-on:click="showInformation('company');">Companies</button>
-                        <button  class="btn btn-primary btn-lg" v-on:click="showInformation('etf');">ETF</button>
-                        <button  class="btn btn-primary btn-lg" v-on:click="showInformation('index');">Index</button>
-                    </div>
+                <div class="btn-group-lg col-sm-2">
+                    <button  class="btn btn-primary btn-lg" v-on:click="showInformation('company');">Companies</button>
+                    <button  class="btn btn-primary btn-lg" v-on:click="showInformation('etf');">ETF</button>
+                    <button  class="btn btn-primary btn-lg" v-on:click="showInformation('index');">Index</button>
                 </div>
-                <div class="col-sm-8">
-                    <span>Show information for {{display}}'s</span>
+                <div class="input-group input-group-lg col-sm-10">
+                        <input type="text" class="form-control" :placeholder="'Search in ' + display + '\'s'">
                 </div>
             </div>
         </div>
-        <div class="row"  style="overflow: scroll; overflow-x: auto; height: 80vh;" v-if="display == 'company'">
-            <table class="table">
-                <thead>
+
+        <div class="row"  style="overflow: scroll; overflow-x: auto; height: 85vh;" v-if="display == 'company'">
+            <table class="table table-striped table-bordered table-hover table-fixed">
+                <thead class="thead-dark">
                     <tr>
                         <th>Index</th>
                         <th>Company Name</th>
@@ -37,30 +36,30 @@
             </table>
         </div>
         <div class="row"  style="overflow: scroll; overflow-x: auto; height: 80vh;" v-if="display == 'etf'">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Index</th>
-                            <th>ETF Name</th>
-                            <th>Symbol</th>
-                            <th>Underlying asset</th>
-                            <th>Date Of Listing </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in list.etfList">
-                            <td>{{index+1}}</td>
-                            <td>{{item.etfName}}</td>
-                            <td>{{item.symbol}}</td>
-                            <td>{{item.underlying}}</td>
-                            <td>{{item.dateOfListing | DateToString}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="table table-striped table-bordered table-hover table-fixed">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Index</th>
+                        <th>ETF Name</th>
+                        <th>Symbol</th>
+                        <th>Underlying asset</th>
+                        <th>Date Of Listing </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in list.etfList">
+                        <td>{{index+1}}</td>
+                        <td>{{item.etfName}}</td>
+                        <td>{{item.symbol}}</td>
+                        <td>{{item.underlying}}</td>
+                        <td>{{item.dateOfListing | DateToString}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="row"  style="overflow: scroll; overflow-x: auto; height: 80vh;" v-if="display == 'index'">
-            <table class="table">
-                <thead>
+            <table class="table table-striped table-bordered table-hover table-fixed">
+                <thead class="thead-dark">
                     <tr>
                         <th>Index</th>
                         <th>Index Name</th>

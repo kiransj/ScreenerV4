@@ -1,60 +1,3 @@
-span.weak {
-	font-weight: lighter;
-	font-size: 13px;
-}
-div.header {
-	position: static;
-	height: auto;
-	font-size: 20px;
-	font-family: monospace;
-	text-align: left;
-}
-div.NavBarLine {
-	position: static;
-	height: auto;
-	font-size: 22px;
-	font-family: monospace;
-	text-align: center;
-}
-div.data {
-	position: relative;
-	height: auto;
-	padding-top:5px;
-	font-family: monospace;
-}
-
-table {
-	margin-top: 10px;
-	text-align: left;
-}
-
-table th {
-	vertical-align: central;
-	background-color: lightgreen;
-	color: white;
-	padding: 10px;
-	font-size: 17px;
-}
-
-table th a {
-	cursor: pointer;
-	color: blue;
-}
-
-table tr {
-	vertical-align: central;
-	padding: 10px;
-}
-
-tr:nth-child(odd) {
-	background-color: #f2f2f2;
-}
-
-table, th, td {
-	border: 1px solid black;
-}
-
-
 button.LinkButton {
 	border: none;
 	padding: 0;
@@ -62,32 +5,6 @@ button.LinkButton {
 	color: blue;
 	cursor: pointer;
 	text-decoration: underline;
-	font-size: 16px;
+	font-size: 15px;
 	font-family: monospace;
-	padding-top: 10px;
-}
-
-.grow {
-	border-radius: 10px;
-	height: 25px;
-	width: auto;
-	float: left;
-	position: relative;
-	transition: height 0.5s;
-	-webkit-transition: height 0.5s;
-	text-align: left;
-	overflow: hidden;
-	font-size: 20px;
-}
-.grow:hover {
-	height: auto;
-	width:auto;
- }
-
-
-@media (max-width: 767px) {
-    /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
-    body {
-        padding-top: 50px;
-    }
 }
