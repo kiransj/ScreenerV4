@@ -98,7 +98,7 @@ namespace Vue.Controllers
                                    date = stockService.DayToDate(item.Day),
                                    close = item.Close,
                                    totDelQty = item.TotalDeliveredQty,
-                                   totTrades = item.TotalTradedQty,
+                                   totTrades = item.TotalTrades,
                                    totTraVal = item.TotalTradedValue,
                                    totQty = item.TotalTradedQty
                                 }).ToList();
@@ -134,7 +134,7 @@ namespace Vue.Controllers
                         var array = hl[item.CompanyId].UpDown30Days.ToCharArray();
                         Array.Reverse(array);
                         sr.upDown = new String(array);
-                        sr.upDown = "#" + (sr.upDown.Length > 30 ? sr.upDown.Substring(0, 30) : sr.upDown);
+                        sr.upDown = (sr.upDown.Length > 30 ? sr.upDown.Substring(0, 30) : sr.upDown);
                     }
                     sr.change = Math.Round(100 * (item.Close - item.PrevClose)/item.PrevClose, 2);
 

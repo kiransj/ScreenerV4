@@ -1,26 +1,28 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-sm-6">
-                <h3>
-                    <center>{{symbol}}</center>
-                </h3>
+            <div class="col-sm-3">
+                <h3><center>{{symbol}}</center></h3>
             </div>
-            <div class="col-sm-6">
-                <button class="LinkButton" v-on:click="showDays(10)">10 Days</button>
-                <button class="LinkButton" v-on:click="showDays(30)">30 Days</button>
-                <button class="LinkButton" v-on:click="showDays(60)">60 Days</button>
-                <button class="LinkButton" v-on:click="showDays(0)">All Days</button>
+            <div class="col-sm-3">
+                <h2>Data&links</h2>
+            </div>
+            <div class="col-sm-3">
+                <h2>52 Week high low</h2>
+            </div>
+            <div class="col-sm-3">
+                <ul class="nav nav-pills">
+                    <li v-for='item in [10, 30, 60, 90, 180, 0]'>
+                        <button style="padding-left: 15px;"class="LinkButton" v-on:click="showDays(item)">{{item > 0 ? item : 'All'}} Days</button>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <div class="row" style="overflow: scroll; overflow-x: auto; height: 80vh; padding-top: 1px">
-            <div class="col-sm-6" id="volumePlot"></div>
-            <div class="col-sm-6" id="pricePlot"></div>
-        </div>
+        <div class="row" style="width:auto;height:auto;" id="volumePlot"/>
+        <div class="row" id="pricePlot"/>
 
         <div class="row" style="overflow: scroll; overflow-x: auto; height: 80vh; padding-top: 5px">
-            <h3><center>Raw Numbers</center></h3>
             <table class="table table-striped table-bordered table-hover table-fixed">
                 <thead class="thead-dark">
                     <tr>

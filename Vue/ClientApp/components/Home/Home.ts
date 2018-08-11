@@ -13,4 +13,13 @@ export default class HomeComponent extends Vue {
     mounted() {
 
     }
+
+    UpdateDataToLatest(): void {
+        alert("Updating data to latest");
+        fetch('/api/StockData/UpdateDataToLatest')
+        .then(response => response.json() as Promise<number>)
+        .then(data => {
+            alert("Updated data to Latest");
+        });
+    }
 }

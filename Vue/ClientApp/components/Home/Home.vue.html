@@ -2,7 +2,7 @@
     <div>
         <div class="row">
             <div class="col-sm-2">
-                <div class="card" style="width: 18rem; background-color: lightcoral">
+                <div class="card" style="width: 18rem; background-color: lightblue">
                     <div class="card-body">
                         <h5 class="card-title">List of All</h5>
                         <p class="card-text">List of Companies, ETF's and Index's</p>
@@ -20,8 +20,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row" style="padding-top: 15px">
             <div class="col-sm-2">
                 <div class="card" style="width: 18rem; background-color: lightblue">
                     <div class="card-body">
@@ -37,6 +35,26 @@
                         <h5 class="card-title">Daily Report For ETF's</h5>
                         <p class="card-text">List of ETF's and it's price, volume, 52 week high/low etc</p>
                         <router-link class="btn btn-success" to="/Equity/Report">Show ETF's</router-link>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 50px;">
+            <div class="col-sm-2">
+                <div class="card" style="width: 18rem; background-color: lightcoral">
+                    <div class="card-body">
+                        <h5 class="card-title">Update Stock Data</h5>
+                        <p class="card-text">Update Stock Data to Latest</p>
+                        <button class="btn btn-success" v-on:click="UpdateDataToLatest(item)">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="card" style="width: 18rem; background-color: lightblue">
+                    <div class="card-body">
+                        <h5 class="card-title">View Logs</h5>
+                        <p class="card-text">View Server Logs</p>
+                        <router-link class="btn btn-success" to="/List">View</router-link>
                     </div>
                 </div>
             </div>

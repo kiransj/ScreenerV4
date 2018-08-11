@@ -54,4 +54,31 @@ export default class ReportComponent extends Vue {
                 this.startIndex = 0;
         }
     }
+
+    showAll(): void {
+        this.elementsPerPage = (this.elementsPerPage == 50) ? 100000 : 50;
+        if(this.elementsPerPage == 100000) {
+            this.startIndex = 0;
+        }
+    }
+
+    searchQuery:string = "";
+    onSearch(): void {
+
+    }
+
+    sortReverse: number = -1;
+    sortBy(sortKey: string): void  {
+        this.sortReverse *= -1;
+        switch (sortKey) {
+            case "totQty":
+                this.stockReport = stockReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
+                break;
+            case "symbol":
+            case "upDown":
+                this.stockReport = stockReport.sort((left, right): number => (left[sortKey].localeCompare(right[sortKey])) * this.sortReverse);
+                break;
+        }
+        this.startIndex = 0;
+    }
 }

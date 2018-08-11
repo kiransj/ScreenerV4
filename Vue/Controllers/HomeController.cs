@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
+using Helper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace vue.Controllers
@@ -20,7 +22,5 @@ namespace vue.Controllers
             ViewData["RequestId"] = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
             return View();
         }
-
-
     }
 }

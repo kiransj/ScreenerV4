@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Helper;
 using MarketData;
@@ -48,6 +49,19 @@ namespace vue.Controllers
             string returnValue = System.Text.ASCIIEncoding.ASCII.GetString(encodedDataAsBytes);
             Globals.Log.Info($"History for {returnValue}");
             return Ok(StockReport.GetStockHistory(returnValue));
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult UpdateDataToLatest()
+        {
+            StockServices stockService = new StockServices();
+            return Ok(stockService.UpdateStockDataToToday());
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult LogFile()
+        {
+            return File(System.IO.File.ReadAllBytes(Globals.Options.LogFileName), MediaTypeNames.Text.Plain);
         }
     }
 }
