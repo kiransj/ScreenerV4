@@ -8,3 +8,8 @@ button.LinkButton {
 	font-size: 15px;
 	font-family: monospace;
 }
+
+span.weak {
+	font-weight: lighter;
+	font-size: 13px;
+}

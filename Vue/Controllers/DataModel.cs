@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Helper;
 using MarketData;
 using MarketData.StockDatabase;
 
@@ -60,6 +61,10 @@ namespace Vue.Controllers
         public string upDown;
         public double high52week;
         public double low52week;
+        public double change5d;
+        public double change30d;
+        public double hlp;
+        public double DelQtyChange;
 
         public StockDailyReport()
         {
@@ -67,6 +72,10 @@ namespace Vue.Controllers
             low52week = -1;
             upDown = "";
             circuitBreaker = "";
+            change5d = -1;
+            change30d = -1;
+            hlp = -1;
+            DelQtyChange = -1;
         }
     }
 
@@ -108,10 +117,28 @@ namespace Vue.Controllers
         static public List<StockDailyReport> GetStockReport(DateTime date)
         {
             StockServices stockService = new StockServices();
+
             (bhav, ohlc, highLow) = stockService.GetStockReport(date);
+            mapping = stockService.GetCompanyIdToSymbol();
+
             Dictionary<int, string> circuitBreaker = ohlc.Select(x => new { x.CompanyId, x.HighLow}).ToDictionary(x => x.CompanyId, x => x.HighLow);
             Dictionary<int, HighLow52WeekTable> hl = highLow.ToDictionary(x => x.CompanyId, x => x);
-            mapping = stockService.GetCompanyIdToSymbol();
+            DateTime[] dates = stockService.GetTradedDates().ToArray();
+
+            int index = 0;
+            for(int i = 0; i < dates.Length; i++)
+            {
+                if(dates[i].Date.Year == date.Date.Year && dates[i].Date.Day == date.Date.Day && dates[i].Date.Month== date.Date.Month)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            var bhav2d = stockService.GetStockReport(dates[index+1]).bhav.ToDictionary(x => x.CompanyId, x => x.TotalDeliveredQty);
+            var bhav5d = stockService.GetStockReport(dates[index+5]).bhav.ToDictionary(x => x.CompanyId, x => x.Close);
+            var bhav30d = stockService.GetStockReport(dates[index+30]).bhav.ToDictionary(x => x.CompanyId, x => x.Close);
+
             List<StockDailyReport> report = new List<StockDailyReport>();
 
             foreach(var item in bhav)
@@ -126,17 +153,33 @@ namespace Vue.Controllers
                     sr.totTraVal = item.TotalTradedValue;
                     sr.circuitBreaker = circuitBreaker.ContainsKey(item.CompanyId) ? circuitBreaker[item.CompanyId]: "";
                     sr.close = item.Close;
+                    sr.change = Math.Round(100 * (item.Close - item.PrevClose)/item.PrevClose, 2);
                     if(hl.ContainsKey(item.CompanyId))
                     {
                         var tmp = hl[item.CompanyId];
                         sr.high52week = tmp.High;
                         sr.low52week = tmp.Low;
+                        sr.hlp = Math.Round(100.0 * (sr.close - tmp.Low)/(tmp.High - tmp.Low), 2);
                         var array = hl[item.CompanyId].UpDown30Days.ToCharArray();
                         Array.Reverse(array);
                         sr.upDown = new String(array);
                         sr.upDown = (sr.upDown.Length > 30 ? sr.upDown.Substring(0, 30) : sr.upDown);
                     }
-                    sr.change = Math.Round(100 * (item.Close - item.PrevClose)/item.PrevClose, 2);
+
+                    if(bhav5d.ContainsKey(item.CompanyId))
+                    {
+                        var price = bhav5d[item.CompanyId];
+                        sr.change5d = Math.Round(100 * (item.Close - price)/price, 2);
+                    }
+                    if(bhav30d.ContainsKey(item.CompanyId))
+                    {
+                        var price = bhav30d[item.CompanyId];
+                        sr.change30d = Math.Round(100 * (item.Close - price)/price, 2);
+                    }
+                    if(bhav2d.ContainsKey(item.CompanyId))
+                    {
+                        sr.DelQtyChange = Math.Round(1.0 * item.TotalDeliveredQty/bhav2d[item.CompanyId], 2);
+                    }
 
                     report.Add(sr);
                 }

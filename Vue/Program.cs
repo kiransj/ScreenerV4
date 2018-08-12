@@ -16,14 +16,28 @@ namespace vue
     {
         public static void Main(string[] args)
         {
-            Globals.InitGlobals("../MarketData/Options.json");
-            BuildWebHost(args).Run();
+            if(args.Count() == 1)
+            {
+                Console.WriteLine($"Options file {args[0]} passed from cmd line");
+                Globals.InitGlobals(args[0]);
+            }
+            else if(args.Count() == 0)
+            {
+                Console.WriteLine("Using Default Options file");
+                Globals.InitGlobals("../MarketData/Options.json");
+            }
+            else
+            {
+                Console.WriteLine("Wrong argument. Usage ./a.out <optionsFile>");
+                Environment.Exit(2);
+            }
+            BuildWebHost().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args)
+        public static IWebHost BuildWebHost()
         {
             Globals.Log.Info($"Starting Server on port {Globals.Options.httpServer.Port}");
-            return WebHost.CreateDefaultBuilder(args)
+            return WebHost.CreateDefaultBuilder()
                     .UseUrls($"http://*:{Globals.Options.httpServer.Port}")
                     .UseStartup<Startup>()
                     .Build();

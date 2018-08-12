@@ -15,6 +15,10 @@ interface StockReport
     upDown:string;
     high52week:number;
     low52week:number;
+    change5d: number;
+    change30d: number;
+    hlp: number;
+    delQtyChange: number;
 }
 
 let stockReport:StockReport[] = [];
@@ -23,7 +27,7 @@ let stockReport:StockReport[] = [];
 export default class ReportComponent extends Vue {
     stockReport:StockReport[] = [];
     startIndex: number = 0;
-    elementsPerPage: number = 50;
+    elementsPerPage: number = 25;
     created(): void {
         if(stockReport.length == 0)
         {
@@ -45,18 +49,18 @@ export default class ReportComponent extends Vue {
     ShowElements(more: boolean): void {
         if(more)
         {
-            if((this.startIndex + 50) < this.stockReport.length)
-                this.startIndex += 50;
+            if((this.startIndex + 25) < this.stockReport.length)
+                this.startIndex += 25;
         } else
         {
-            this.startIndex -= 50;
+            this.startIndex -= 25;
             if(this.startIndex < 0)
                 this.startIndex = 0;
         }
     }
 
     showAll(): void {
-        this.elementsPerPage = (this.elementsPerPage == 50) ? 100000 : 50;
+        this.elementsPerPage = (this.elementsPerPage == 25) ? 100000 : 25;
         if(this.elementsPerPage == 100000) {
             this.startIndex = 0;
         }
@@ -64,14 +68,18 @@ export default class ReportComponent extends Vue {
 
     searchQuery:string = "";
     onSearch(): void {
-
+        this.stockReport = this.searchQuery.length == 0 ? stockReport: (stockReport.filter(x => (x.symbol.toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0 || x.upDown.toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0)));
+        this.startIndex = 0;
+        this.elementsPerPage = 25;
     }
 
     sortReverse: number = -1;
     sortBy(sortKey: string): void  {
         this.sortReverse *= -1;
         switch (sortKey) {
-            case "totQty":
+            case "totQty": case "hlp":
+            case "change5d": case "change30d":
+            case "delQtyChange": case "close": case "change":
                 this.stockReport = stockReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
                 break;
             case "symbol":

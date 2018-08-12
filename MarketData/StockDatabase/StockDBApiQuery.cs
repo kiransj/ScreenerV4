@@ -42,6 +42,14 @@ namespace MarketData.StockDatabase
             Globals.Log.Debug($"Querying database for companyId -> symbol mapping.");
             return stockDatabase.CompanyInformation.ToDictionary(x => x.CompanyId, x => x.Symbol);
         }
+
+        public List<DateTime> GetTradedDays()
+        {
+            Globals.Log.Debug($"Querying database for traded days");
+            return stockDatabase.EquityBhav.Select(x => DayToDate(x.Day)).OrderByDescending(x => x).Distinct().ToList();
+        }
+
+
         public List<EquityBhavTable> GetHistory(string symbol)
         {
             try

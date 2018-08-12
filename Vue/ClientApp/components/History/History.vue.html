@@ -1,21 +1,24 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-sm-3">
-                <h3><center>{{symbol}}</center></h3>
+            <div class="col-sm-2" style="border: 1px solid black;">
+                <h3><span style="display:inline-block;"><a v-bind:href="'https://www.screener.in/company/'+symbol" target="_blank">{{symbol}}</a></span></h3>
             </div>
-            <div class="col-sm-3">
-                <h2>Data&links</h2>
+            <div class="col-sm-2" style="border: 1px solid black;" >
+                <h3>
+                <span  style="display:inline-block;"><a v-bind:href="'https://news.google.com/news/search/section/q/'+symbol" target="_blank">News</a></span>
+                <span  style="display:inline-block; padding-left: 20px; vertical-align: center;"><a v-bind:href="'https://twitter.com/search?q=%23'+symbol" target="_blank">Twitter</a></span>
+                </h3>
             </div>
-            <div class="col-sm-3">
-                <h2>52 Week high low</h2>
-            </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2" style="border: 1px solid black;">
                 <ul class="nav nav-pills">
                     <li v-for='item in [10, 30, 60, 90, 180, 0]'>
                         <button style="padding-left: 15px;"class="LinkButton" v-on:click="showDays(item)">{{item > 0 ? item : 'All'}} Days</button>
                     </li>
                 </ul>
+            </div>
+            <div class="col-sm-6" style="border: 1px solid black;">
+
             </div>
         </div>
 

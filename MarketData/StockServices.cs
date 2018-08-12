@@ -6,6 +6,7 @@ using MarketData.StockDatabase;
 using Helper;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MarketData
 {
@@ -61,6 +62,11 @@ namespace MarketData
             var result2 = dbApi.GetOHLCData(date);
             var result3 = dbApi.GetHighLow52Week();
             return (result1, result2, result3);
+        }
+
+        public List<DateTime> GetTradedDates()
+        {
+            return dbApi.GetTradedDays();
         }
 
         public List<EquityBhavTable> GetStockHistory(string symbol)
