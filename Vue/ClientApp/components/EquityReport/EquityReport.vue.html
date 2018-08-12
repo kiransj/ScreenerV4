@@ -5,8 +5,15 @@
                 <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">@</span></div>
                 <input type="text" class="form-control" placeholder="Search for Symbol,Marketcap, Qty, 52 Week HighLow etc"v-model="searchQuery" v-on:keyup="onSearch">
             </div>
-            <div class="col-sm-6">
-
+            <div class="col-sm-2" style="border: 1px solid black;">
+                <div class="grow">
+                <center>Show companies in List</center>
+                <ul class="nav nav-pills">
+                    <li v-for='item in favListNames'>
+                        <button style="padding-left: 15px;"class="LinkButton" v-on:click="showCompaniesInList(item)">{{item}}</button>
+                    </li>
+                </ul>
+                </div>
             </div>
         </div>
         <div class="row"  style="overflow: scroll; overflow-x: auto; height: 85vh; padding-top: 5px" >

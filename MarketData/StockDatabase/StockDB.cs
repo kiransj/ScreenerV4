@@ -148,19 +148,6 @@ namespace MarketData.StockDatabase
         public double DivYield { get; set; }
     }
 
-    public class CircuitBreakerTable
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        [Required]
-        public int Day { get; set; }
-        [Required]
-        public int CompanyId { get; set; }
-        [Required]
-        public string HighLow { get; set; }
-    }
-
     public class HighLow52WeekTable
     {
         [Key]
@@ -173,6 +160,17 @@ namespace MarketData.StockDatabase
         public string UpDown30Days { get; set;}
     }
 
+    public class StockFavList
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        [Required]
+        public string Symbol { get; set; }
+        [Required]
+        public string ListName { get; set; }
+    }
+
     class StockDataContext : DbContext
     {
         public DbSet<EquityInformationTable> CompanyInformation { get; set; }
@@ -181,8 +179,8 @@ namespace MarketData.StockDatabase
         public DbSet<EquityBhavTable>        EquityBhav { get; set; }
         public DbSet<EquityOHLCTable>        EquityOHLC { get; set; }
         public DbSet<IndexBhavTable>         IndexBhav { get; set; }
-        public DbSet<CircuitBreakerTable>    CircuitBreaker { get; set; }
         public DbSet<HighLow52WeekTable>     HighLow52Week { get; set; }
+        public DbSet<StockFavList>           Favlist { get; set; }
 
         private string dbFilename;
 
@@ -236,11 +234,9 @@ namespace MarketData.StockDatabase
             modelBuilder.Entity<IndexBhavTable>().HasIndex(x => x.IndexId);
             modelBuilder.Entity<IndexBhavTable>().HasIndex(x => new {x.Day, x.IndexId}).IsUnique();
 
-            modelBuilder.Entity<CircuitBreakerTable>().HasIndex(x => x.Day);
-            modelBuilder.Entity<CircuitBreakerTable>().HasIndex(x => x.CompanyId);
-            modelBuilder.Entity<CircuitBreakerTable>().HasIndex(x => new {x.CompanyId, x.Day}).IsUnique();
-
             modelBuilder.Entity<HighLow52WeekTable>().HasIndex(x => x.CompanyId).IsUnique();
+
+            modelBuilder.Entity<StockFavList>().HasIndex(x => new {x.Symbol, x.ListName}).IsUnique();
         }
 
     }

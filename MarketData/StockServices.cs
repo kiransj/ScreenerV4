@@ -89,5 +89,38 @@ namespace MarketData
         {
             return dbApi.GetCompanyIdToSymbolMapping();
         }
+
+
+        public int AddStockToFavList(string symbol, string listName)
+        {
+            try
+            {
+                return dbApi.AddToFavList(symbol, listName);
+            }
+            catch(Exception ex)
+            {
+                Globals.Log.Error($"Unable to add '{symbol}' to favList '{listName}' due to error `{ex.Message}`");
+                return 0;
+            }
+        }
+
+
+        public int RemoveStockToFavList(string symbol, string listName)
+        {
+            try
+            {
+                return dbApi.RemoveFromFavList(symbol, listName);
+            }
+            catch(Exception ex)
+            {
+                Globals.Log.Error($"Unable to remove '{symbol}' from favList '{listName}' due to error `{ex.Message}`");
+                return 0;
+            }
+        }
+
+        public List<StockFavList> GetStockFavList()
+        {
+            return dbApi.GetFavList();
+        }
     }
 }

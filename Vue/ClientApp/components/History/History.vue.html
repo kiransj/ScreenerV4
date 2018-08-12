@@ -17,8 +17,15 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-sm-6" style="border: 1px solid black;">
-
+            <div class="col-sm-2" style="border: 1px solid black;">
+                <div class="grow">
+                    Add To Fav List
+                    <ul style="list-style-type:none">
+                        <li v-for='item in favList'>
+                            <button class="LinkButton" v-on:click="AddToFavList(item)">{{item}}</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 

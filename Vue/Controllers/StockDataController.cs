@@ -63,5 +63,35 @@ namespace vue.Controllers
         {
             return File(System.IO.File.ReadAllBytes(Globals.Options.LogFileName), MediaTypeNames.Text.Plain);
         }
+
+        [HttpGet("[action]")]
+        public ActionResult AddToFavList(string Symbol, string FavList)
+        {
+            string symbol = System.Text.ASCIIEncoding.ASCII.GetString(System.Convert.FromBase64String(Symbol));
+            string favList = System.Text.ASCIIEncoding.ASCII.GetString(System.Convert.FromBase64String(FavList));
+
+            return Ok(stockService.AddStockToFavList(symbol, favList));
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult GetFavLists()
+        {
+            return Ok(stockService.GetStockFavList().GroupBy(x => x.ListName).Select(x => x.First().ListName).ToList());
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult GetFavListWithSymbols()
+        {
+            return Ok(stockService.GetStockFavList());
+        }
+
+        [HttpGet("[action]")]
+        public ActionResult RemoveToFavList(string Symbol, string FavList)
+        {
+            string symbol = System.Text.ASCIIEncoding.ASCII.GetString(System.Convert.FromBase64String(Symbol));
+            string favList = System.Text.ASCIIEncoding.ASCII.GetString(System.Convert.FromBase64String(FavList));
+
+            return Ok(stockService.RemoveStockToFavList(symbol, favList));
+        }
     }
 }

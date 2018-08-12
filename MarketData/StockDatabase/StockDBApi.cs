@@ -281,5 +281,18 @@ namespace MarketData.StockDatabase
 
             return stockDatabase.SaveChanges();
         }
+
+        public int AddToFavList(string symbol, string listName)
+        {
+            stockDatabase.Favlist.Add(new StockFavList() { Symbol = symbol, ListName = listName });
+            return stockDatabase.SaveChanges();
+        }
+
+        public int RemoveFromFavList(string symbol, string listName)
+        {
+            var item = stockDatabase.Favlist.Where(x => (x.Symbol == symbol) && (x.ListName == listName)).First();
+            stockDatabase.Favlist.Remove(item);
+            return stockDatabase.SaveChanges();
+        }
     }
 }

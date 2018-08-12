@@ -21,11 +21,20 @@ interface StockReport
     delQtyChange: number;
 }
 
+interface FavLists
+{
+    symbol: string;
+    listName: string;
+}
+
 let stockReport:StockReport[] = [];
 // Lets save the UI state statically
 @Component
 export default class ReportComponent extends Vue {
     stockReport:StockReport[] = [];
+    favLists:FavLists[] = [];
+    favListNames: string[] = [];
+
     startIndex: number = 0;
     elementsPerPage: number = 25;
     created(): void {
@@ -39,6 +48,18 @@ export default class ReportComponent extends Vue {
                 this.stockReport = stockReport;
             });
         }
+
+        // Get list and symbols
+        fetch('/api/StockData/GetFavListWithSymbols')
+        .then(response => response.json() as Promise<FavLists[]>)
+        .then(data => { this.favLists = data; });
+
+        fetch('/api/StockData/GetFavLists')
+        .then(response => response.json() as Promise<string[]>)
+        .then(data => {
+            this.favListNames = data;
+        });
+
         this.stockReport = stockReport;
     }
 

@@ -24,6 +24,7 @@ export default class HistoryComponent extends Vue {
     tradedVolumeList: number[] = [];
     tradesList: number[] = [];
     xaxisString: string[] = [];
+    favList: string[] = [];
 
     constructor()
     {
@@ -33,6 +34,12 @@ export default class HistoryComponent extends Vue {
 
     created() {
         this.symbol = this.$route.params.symbol
+
+        fetch('/api/StockData/GetFavLists')
+        .then(response => response.json() as Promise<string[]>)
+        .then(data => {
+            this.favList = data;
+        });
         fetch('/api/StockData/GetStockHistory?symbol='+ btoa(this.symbol))
         .then(response => response.json() as Promise<StockHistory[]>)
         .then(data => {
@@ -85,5 +92,14 @@ export default class HistoryComponent extends Vue {
                         this.deliveredVolumeList.slice(0, days),
                         this.tradedVolumeList.slice(0, days),
                         this.tradesList.splice(0, days));
+    }
+
+    AddToFavList(listName: string): void {
+        fetch('/api/StockData/AddToFavList?Symbol='+btoa(this.symbol)+"&FavList="+btoa(listName))
+        .then(response => response.json() as Promise<number>)
+        .then(data => {
+            if(data == 1) alert("Added To DB");
+            else alert("Unable to add to database");
+        });
     }
 }

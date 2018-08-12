@@ -90,5 +90,11 @@ namespace MarketData.StockDatabase
             Globals.Log.Debug($"Querying database for List of Index");
             return stockDatabase.IndexInformation.ToList();
         }
+
+        public List<StockFavList> GetFavList()
+        {
+            Globals.Log.Debug($"Querying database for FavList");
+            return stockDatabase.Favlist.ToList();
+        }
     }
 }
