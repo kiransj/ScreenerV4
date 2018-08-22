@@ -27,6 +27,7 @@ interface FavLists
     listName: string;
 }
 
+let favLists:FavLists[] = [];
 let stockReport:StockReport[] = [];
 // Lets save the UI state statically
 @Component
@@ -52,7 +53,7 @@ export default class ReportComponent extends Vue {
         // Get list and symbols
         fetch('/api/StockData/GetFavListWithSymbols')
         .then(response => response.json() as Promise<FavLists[]>)
-        .then(data => { this.favLists = data; });
+        .then(data => { this.favLists = favLists = data; });
 
         fetch('/api/StockData/GetFavLists')
         .then(response => response.json() as Promise<string[]>)
@@ -89,7 +90,7 @@ export default class ReportComponent extends Vue {
 
     searchQuery:string = "";
     onSearch(): void {
-        this.stockReport = this.searchQuery.length == 0 ? stockReport: (stockReport.filter(x => (x.symbol.toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0 || x.upDown.toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0)));
+        this.stockReport = this.searchQuery.length == 0 ? stockReport: (stockReport.filter(x => (x.symbol.toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0 || x.upDown.toLowerCase().indexOf(this.searchQuery.toLowerCase()) == 0)));
         this.startIndex = 0;
         this.elementsPerPage = 25;
     }
@@ -101,13 +102,19 @@ export default class ReportComponent extends Vue {
             case "totQty": case "hlp":
             case "change5d": case "change30d":
             case "delQtyChange": case "close": case "change":
-                this.stockReport = stockReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
+                this.stockReport = this.stockReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
                 break;
             case "symbol":
             case "upDown":
-                this.stockReport = stockReport.sort((left, right): number => (left[sortKey].localeCompare(right[sortKey])) * this.sortReverse);
+                this.stockReport = this.stockReport.sort((left, right): number => (left[sortKey].localeCompare(right[sortKey])) * this.sortReverse);
                 break;
         }
         this.startIndex = 0;
+    }
+
+    showCompaniesInList(listName: string): void {
+        var symbolList = favLists.filter((value: FavLists, index: number, array: FavLists[]) => { return value.listName === listName}).map(x => x.symbol);
+        alert(symbolList);
+        this.stockReport = stockReport.filter((value: StockReport, index: number, array: StockReport[]) => { return symbolList.indexOf(value.symbol) >= 0; });
     }
 }

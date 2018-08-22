@@ -207,6 +207,8 @@ namespace MarketData.StockDatabase
         public int AddOrUpdateEquityInformation(List<EquityInformation> equitys, List<ETFInformation> etfs, List<IndexInformation> indexes)
         {
             Globals.Log.Info($"Updating/Adding Company/Index/ETF to DB");
+
+            var mappingEquityIsin = equitys.ToDictionary(x => x.IsinNumber, x => x);
             // Remove any duplicate entries
             var mappingEquity = equitys.GroupBy(x => x.Symbol)
                                        .Distinct()
@@ -220,7 +222,15 @@ namespace MarketData.StockDatabase
 
             foreach (var item in stockDatabase.CompanyInformation)
             {
-                if (mappingEquity.ContainsKey(item.Symbol))
+                if(mappingEquityIsin.ContainsKey(item.ISINNumber))
+                {
+                    if(item.Symbol != mappingEquityIsin[item.ISINNumber].Symbol)
+                    {
+                        Globals.Log.Info($"Updating old symbol {item.Symbol} -> {mappingEquityIsin[item.ISINNumber].Symbol}");
+                        item.Symbol = mappingEquityIsin[item.ISINNumber].Symbol;
+                    }
+                }
+                else if (mappingEquity.ContainsKey(item.Symbol))
                 {
                     var e = mappingEquity[item.Symbol];
                     item.Symbol = e.Symbol;

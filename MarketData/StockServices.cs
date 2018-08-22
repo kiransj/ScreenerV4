@@ -36,7 +36,7 @@ namespace MarketData
                 var data = await marketApi.GetDailyData(dateToUpdate);
                 if(data != null)
                 {
-                    dbApi.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
+                    //dbApi.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
                     dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
                                                              data.circuitBreaker, data.highLow52Week);
                     updatedDays++;
