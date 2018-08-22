@@ -120,7 +120,10 @@ namespace MarketData
 
         public List<StockFavList> GetStockFavList()
         {
-            return dbApi.GetFavList();
+            var list = dbApi.GetListOfEquity().Where(x => x.IsETF).Select(x => new StockFavList() {ListName = "ETF", Symbol = x.Symbol});
+            var result = dbApi.GetFavList();
+            result.AddRange(list);
+            return result;
         }
     }
 }

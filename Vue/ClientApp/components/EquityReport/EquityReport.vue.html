@@ -7,10 +7,13 @@
             </div>
             <div class="col-sm-2" style="border: 1px solid black;">
                 <div class="grow">
-                <center>Show companies in List</center>
+                <center>Currently Showing <span style="color: blue; cursor: pointer;">{{listName}}</span></center>
                 <ul class="nav nav-pills">
                     <li v-for='item in favListNames'>
-                        <button style="padding-left: 15px;"class="LinkButton" v-on:click="showCompaniesInList(item)">{{item}}</button>
+                        <button style="padding-left: 15px;" class="LinkButton" v-on:click="showCompaniesInList(item)">{{item}}</button>
+                    </li>
+                    <li>
+                        <button style="padding-left: 15px;" class="LinkButton" v-on:click="showCompaniesInList('')">All</button>
                     </li>
                 </ul>
                 </div>
@@ -21,26 +24,26 @@
                 <thead  class="thead-dark">
                     <tr>
                         <th scope="col">Index</th>
-                        <th scope="col" v-on:click="sortBy('symbol')"><span style="color: white; font-size: 25px;">&#x21C5</span>SYM</th>
-                        <th scope="col" v-on:click="sortBy('close')"><span style="color: white; font-size: 25px;">&#x21C5</span>LTP</th>
-                        <th scope="col" v-on:click="sortBy('change')"><span style="color: white; font-size: 25px;">&#x21C5</span>Chg</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('symbol')"><span style="color: white; font-size: 25px;">&#x21C5</span>SYM</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('close')"><span style="color: white; font-size: 25px;">&#x21C5</span>LTP</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change')"><span style="color: white; font-size: 25px;">&#x21C5</span>Chg</th>
                         <th scope="col">DQ </th>
-                        <th scope="col" v-on:click="sortBy('delQtyChange')"><span style="color: white; font-size: 25px;">&#x21C5</span>DQChg</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('delQtyChange')"><span style="color: white; font-size: 25px;">&#x21C5</span>DQChg</th>
                         <th scope="col">52H</th>
                         <th scope="col">52L</th>
-                        <th scope="col" v-on:click="sortBy('hlp')"><span style="color: white; font-size: 25px;">&#x21C5</span>HLP</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('hlp')"><span style="color: white; font-size: 25px;">&#x21C5</span>HLP</th>
                         <th scope="col">MarketCap</th>
-                        <th scope="col" v-on:click="sortBy('change5d')"><span style="color: white; font-size: 25px;">&#x21C5</span>5D</th>
-                        <th scope="col" v-on:click="sortBy('change30d')"><span style="color: white; font-size: 25px;">&#x21C5</span>30D</th>
-                        <th scope="col" v-on:click="sortBy('upDown')"><span style="color: white; font-size: 25px;">&#x21C5</span>UD</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change5d')"><span style="color: white; font-size: 25px;">&#x21C5</span>5D</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change30d')"><span style="color: white; font-size: 25px;">&#x21C5</span>30D</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('upDown')"><span style="color: white; font-size: 25px;">&#x21C5</span>UD</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="background-color: white" v-if="stockReport.length > elementsPerPage">
+                    <tr style="background-color: white">
                         <td>{{stockReport.length}}</td>
-                        <td><button class="LinkButton" v-on:click="showAll()">Show {{elementsPerPage > 100 ? 'less' : 'All'}}</button></td>
                         <td><button v-if="startIndex+elementsPerPage < stockReport.length" class="LinkButton" v-on:click="ShowElements(true)">Show More</button></td>
                         <td><button class="LinkButton" v-on:click="ShowElements(false)" v-if="startIndex > 0 && elementsPerPage < 100">Show Less</button></td>
+                        <td><button class="LinkButton" v-on:click="showAll()">Show {{elementsPerPage > 100 ? 'less' : 'All'}}</button></td>
                     </tr>
                     <tr v-for="(item, index) in stockReport.slice(startIndex)" v-if="index < elementsPerPage">
                         <td>{{index+startIndex+1}}</td>
