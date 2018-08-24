@@ -38,6 +38,7 @@ namespace Helper
         public bool CachingEnabled { get; set; } // Enable Caching
         public string TmpFolder { get; set; } //Folder to unzip files
         public string LogFileName { get; set; }
+        public string marketCapFile { get; set; }
         public HttpClientOptions httpClient;
         public HttpServer httpServer;
         public DbOptions dbOptions;

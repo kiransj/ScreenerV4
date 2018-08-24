@@ -11,19 +11,23 @@
                 </h3>
             </div>
             <div class="col-sm-2" style="border: 1px solid black;">
-                <ul class="nav nav-pills">
-                    <li v-for='item in [10, 30, 60, 90, 180, 0]'>
-                        <button style="padding-left: 15px;"class="LinkButton" v-on:click="showDays(item)">{{item > 0 ? item : 'All'}} Days</button>
-                    </li>
-                </ul>
+                <div class="grow">
+                    Show graphs for days
+                    <ul class="nav nav-pills">
+                        <li v-for='item in [10, 30, 60, 90, 180, 360, 0]'>
+                            <button style="padding-left: 15px;"class="LinkButton" v-on:click="showDays(item)">{{item > 0 ? item : 'All'}} Days</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="col-sm-2" style="border: 1px solid black;">
                 <div class="grow">
                     Add To Fav List
-                    <ul style="list-style-type:none">
+                    <ul style="list-style-type:none;" class="nav nav-pills">
                         <li v-for='item in favList'>
-                            <button class="LinkButton" v-on:click="AddToFavList(item)">{{item}}</button>
+                            <button class="LinkButton" style="padding-left: 15px;" v-on:click="AddToFavList(item)">{{item}}</button>
                         </li>
+                        <li><button class="LinkButton" style="padding-left: 15px;" v-on:click="AddToFavList(item, true)">New List</button></li>
                     </ul>
                 </div>
             </div>

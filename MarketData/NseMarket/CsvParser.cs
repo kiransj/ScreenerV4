@@ -4,6 +4,7 @@ using TinyCsvParser.Mapping;
 using Helper;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace MarketData.NseMarket
 {
@@ -148,6 +149,16 @@ namespace MarketData.NseMarket
         }
     }
 
+    class CsvMarketCapMapping : CsvMapping<MarketCap>
+    {
+        public CsvMarketCapMapping() : base()
+        {
+            MapProperty(0, x => x.Symbol);
+            MapProperty(1, x => x.IsinNumber);
+            MapProperty(2, x => x.numOfShares);
+        }
+    }
+
     public class CsvParser
     {
         public List<EquityInformation> ParseEquityInformationFile(string filename)
@@ -252,6 +263,18 @@ namespace MarketData.NseMarket
             return csvParser.ReadFromFile(filename, Encoding.ASCII)
                             .Select(x => x.Result)
                             .Where(x => (x != null) && (x.Symbol.Length >= 2))
+                            .ToList();
+        }
+
+
+        public List<MarketCap> ParseMarketCapFile(string filename)
+        {
+            CsvParser<MarketCap> csvParser = new CsvParser<MarketCap>(new CsvParserOptions(true, ','), new CsvMarketCapMapping());
+
+            Globals.Log.Debug($"Parsing  MarketCap CSV file {filename}");
+            return csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => (x != null) && (x.IsinNumber != null))
                             .ToList();
         }
     }

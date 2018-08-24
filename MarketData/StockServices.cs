@@ -39,6 +39,7 @@ namespace MarketData
                     //dbApi.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
                     dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
                                                              data.circuitBreaker, data.highLow52Week);
+
                     updatedDays++;
                 }
                 else
@@ -47,6 +48,30 @@ namespace MarketData
                 }
             }
             return updatedDays;
+        }
+
+        public Dictionary<int, Int64> GetMarketCap()
+        {
+            var list = marketApi.GetMarketCap();
+            var mapping = dbApi.GetIsinToCompanyIdMapping();
+
+            var result = new Dictionary<int, Int64>();
+            foreach(var item in list)
+            {
+                if(mapping.ContainsKey(item.IsinNumber))
+                {
+                    int companyId = mapping[item.IsinNumber];
+                    if(!result.ContainsKey(companyId))
+                    {
+                        result[companyId] = item.numOfShares;
+                    }
+                    else
+                    {
+                        Globals.Log.Error($"ISIN number {item.IsinNumber}, companyId: {companyId} appears twice in marketCap file");
+                    }
+                }
+            }
+            return result;
         }
 
         public (List<EquityInformationTable> Companies, List<IndexInformationTable> Indexes) GetListOfEquityIndex()

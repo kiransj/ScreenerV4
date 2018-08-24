@@ -94,12 +94,23 @@ export default class HistoryComponent extends Vue {
                         this.tradesList.splice(0, days));
     }
 
-    AddToFavList(listName: string): void {
-        fetch('/api/StockData/AddToFavList?Symbol='+btoa(this.symbol)+"&FavList="+btoa(listName))
-        .then(response => response.json() as Promise<number>)
-        .then(data => {
-            if(data == 1) alert("Added To DB");
-            else alert("Unable to add to database");
-        });
+    AddToFavList(listName: string, promt: Boolean = false): void {
+        if(promt)
+        {
+            var str = "";
+            str = prompt("Enter List Name") || "";
+            if(str == "") return;
+            listName = str;
+        }
+
+        if(confirm("Adding " + this.symbol + " to " + listName))
+        {
+            fetch('/api/StockData/AddToFavList?Symbol='+btoa(this.symbol)+"&FavList="+btoa(listName))
+            .then(response => response.json() as Promise<number>)
+            .then(data => {
+                if(data == 1) alert("Added To DB");
+                else alert("Unable to add to database");
+            });
+        }
     }
 }

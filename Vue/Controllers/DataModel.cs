@@ -65,6 +65,7 @@ namespace Vue.Controllers
         public double change30d;
         public double hlp;
         public double DelQtyChange;
+        public double marketCap;
 
         public StockDailyReport()
         {
@@ -139,6 +140,7 @@ namespace Vue.Controllers
             var bhav5d = stockService.GetStockReport(dates[index+5]).bhav.ToDictionary(x => x.CompanyId, x => x.Close);
             var bhav30d = stockService.GetStockReport(dates[index+30]).bhav.ToDictionary(x => x.CompanyId, x => x.Close);
 
+            var marketCap = stockService.GetMarketCap();
             List<StockDailyReport> report = new List<StockDailyReport>();
 
             foreach(var item in bhav)
@@ -179,6 +181,11 @@ namespace Vue.Controllers
                     if(bhav2d.ContainsKey(item.CompanyId))
                     {
                         sr.DelQtyChange = Math.Round(1.0 * item.TotalDeliveredQty/bhav2d[item.CompanyId], 2);
+                    }
+
+                    if(marketCap.ContainsKey(item.CompanyId))
+                    {
+                        sr.marketCap = Math.Round(marketCap[item.CompanyId] * sr.close/10000000.0, 2);
                     }
 
                     report.Add(sr);

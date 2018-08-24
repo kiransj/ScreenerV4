@@ -22,6 +22,7 @@ namespace MarketData.NseMarket
         public string ETFBhavFilename { get { return  $"etf{ddMMyy}.csv"; }}
         public string CircuitBreakerFilename { get { return  $"bh{ddMMyy}.csv"; }}
         public string HighLow52WeekFilename { get { return $"Pd{ddMMyy}.csv"; }}
+        public string MarketCapFilename { get { return Globals.Options.marketCapFile;} }
 
         private DateTime date;
         private string dd, MM, yy, yyyy, MMM, ddMMyy, ddMMMyyyy;
@@ -52,6 +53,7 @@ namespace MarketData.NseMarket
             output += $"\t\tETFBhav file    : {BhavFilename}\n";
             output += $"\t\tCircuitBrk File : {CircuitBreakerFilename}\n";
             output += $"\t\t52Week HL File  : {HighLow52WeekFilename}\n";
+            output += $"\t\tMarketCap File  : {MarketCapFilename}\n";
 
             return output;
         }
@@ -100,6 +102,12 @@ namespace MarketData.NseMarket
         {
             csvParser = new CsvParser();
             fileDownloader = new FileDownloader();
+        }
+
+        public List<MarketCap> GetMarketCap()
+        {
+            NseURLs nseUrls = new NseURLs(DateTime.Today);
+            return csvParser.ParseMarketCapFile(nseUrls.MarketCapFilename);
         }
 
         public async Task<NseDailyData> GetDailyData(DateTime date)
@@ -159,6 +167,7 @@ namespace MarketData.NseMarket
             // Computed Valus
             dailyData.Indexes = dailyData.IndexBhavData.Select(x => new IndexInformation(x.IndexName))
                                                        .ToList();
+
             return dailyData;
         }
     }

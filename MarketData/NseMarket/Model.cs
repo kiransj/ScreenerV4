@@ -141,4 +141,11 @@ namespace MarketData.NseMarket
         public double High52week { get; set; }
         public double Low52week { get; set; }
     }
+
+    public class MarketCap
+    {
+        public string Symbol { get; set; }
+        public string IsinNumber { get; set; }
+        public Int64 numOfShares { get; set; }
+    }
 }

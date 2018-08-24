@@ -37,6 +37,12 @@ namespace MarketData.StockDatabase
             return data;
         }
 
+        public Dictionary<string, int> GetIsinToCompanyIdMapping()
+        {
+            Globals.Log.Debug($"Querying database for IsinNumber -> companyId mapping.");
+            return stockDatabase.CompanyInformation.ToDictionary(x => x.ISINNumber, x => x.CompanyId);
+        }
+
         public Dictionary<int, string> GetCompanyIdToSymbolMapping()
         {
             Globals.Log.Debug($"Querying database for companyId -> symbol mapping.");

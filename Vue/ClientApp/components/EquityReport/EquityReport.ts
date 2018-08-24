@@ -19,6 +19,7 @@ interface StockReport
     change30d: number;
     hlp: number;
     delQtyChange: number;
+    marketCap: number;
 }
 
 interface FavLists
@@ -151,7 +152,7 @@ export default class ReportComponent extends Vue {
         }
         switch (sortKey) {
             case "totQty": case "hlp":
-            case "change5d": case "change30d":
+            case "change5d": case "change30d": case "marketCap":
             case "delQtyChange": case "close": case "change":
                 this.stockReport = this.stockReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
                 break;
