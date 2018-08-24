@@ -18,6 +18,20 @@
                 </ul>
                 </div>
             </div>
+            <div class="col-sm-2" style="border: 1px solid black;">
+                    <div class="grow">
+                    <center>Market Cap upto</center>
+                    <ul class="nav nav-pills">
+                        <li><button class="LinkButton" style="padding-left: 20px;" v-on:click="filterByMarketCap(0, 10)">10 Crore</button></li>
+                        <li><button class="LinkButton" style="padding-left: 20px;" v-on:click="filterByMarketCap(10, 100)"> 100 Crore</button></li>
+                        <li><button class="LinkButton" style="padding-left: 20px;" v-on:click="filterByMarketCap(100, 1000)"> 1000 Crore</button></li>
+                        <li><button class="LinkButton" style="padding-left: 20px;" v-on:click="filterByMarketCap(1000, 10000)"> 10 Thousand Crore</button></li>
+                        <li><button class="LinkButton" style="padding-left: 20px;" v-on:click="filterByMarketCap(10000, 100000)">1 Lakh Crore</button></li>
+                        <li><button class="LinkButton" style="padding-left: 20px;" v-on:click="filterByMarketCap(100000, 1000000)">10 Lakh Crore</button></li>
+                        <li><button class="LinkButton" style="padding-left: 20px;" v-on:click="filterByMarketCap(0, 0)">All</button></li>
+                    </ul>
+                    </div>
+            </div>
         </div>
         <div class="row"  style="overflow: scroll; overflow-x: auto; height: 85vh; padding-top: 5px" >
             <table class="table table-striped table-bordered table-hover table-fixed" >
@@ -32,7 +46,6 @@
                         <th scope="col">52H</th>
                         <th scope="col">52L</th>
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('hlp')"><span style="color: white; font-size: 25px;">&#x21C5</span>HLP</th>
-                        <th scope="col">MarketCap</th>
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change5d')"><span style="color: white; font-size: 25px;">&#x21C5</span>5D</th>
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change30d')"><span style="color: white; font-size: 25px;">&#x21C5</span>30D</th>
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('marketCap')"><span style="color: white; font-size: 25px;">&#x21C5</span>MarketCap</th>
@@ -56,7 +69,6 @@
                         <td>{{item.high52week}}</td>
                         <td>{{item.low52week}}</td>
                         <td>{{item.hlp}}</td>
-                        <td></td>
                         <td><font v-bind:color="item.change5d > 0 ? 'Green':'Red'">{{item.change5d}}</font></td>
                         <td><font v-bind:color="item.change30d > 0 ? 'Green':'Red'">{{item.change30d}}</font></td>
                         <td>{{item.marketCap}}</td>
