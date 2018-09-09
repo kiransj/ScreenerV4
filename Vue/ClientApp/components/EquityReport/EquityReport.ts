@@ -17,6 +17,8 @@ interface StockReport
     low52week:number;
     change5d: number;
     change30d: number;
+    change60d: number;
+    change120d: number;
     hlp: number;
     delQtyChange: number;
     marketCap: number;
@@ -38,6 +40,8 @@ class UIState {
     startIndex: number = 0;
     elementsPerPage: number = 25;
     sortDirection: number = -1;
+    marketCapEnd: number = 0;
+    marketCapStart: number = 0;
 }
 
 //let favLists:FavLists[] = [];
@@ -52,7 +56,8 @@ export default class ReportComponent extends Vue {
     stockReport:StockReport[] = [];
     favLists:FavLists[] = [];
     favListNames: string[] = [];
-
+    marketCapEnd: number = 0;
+    marketCapStart: number = 0;
     searchQuery:string = "";
     startIndex: number = 0;
     elementsPerPage: number = 25;
@@ -97,6 +102,10 @@ export default class ReportComponent extends Vue {
         this.favLists = uiState.favList;
         this.showCompaniesInList(uiState.listNameShown);
 
+        if(uiState.marketCapEnd != 0) {
+            this.filterByMarketCap(uiState.marketCapStart, uiState.marketCapEnd);
+        }
+
         // Restore the searchQuery
         this.searchQuery = uiState.searchQuery;
         this.onSearch();
@@ -132,16 +141,14 @@ export default class ReportComponent extends Vue {
     onSearch(): void {
         uiState.searchQuery = this.searchQuery;
         this.showCompaniesInList(uiState.listNameShown);
+        if(uiState.marketCapEnd != 0) this.filterByMarketCap(uiState.marketCapStart, uiState.marketCapEnd);
+
         if(this.searchQuery.length > 0)
             this.stockReport = this.stockReport.filter(x => (x.symbol.toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0 || x.upDown.toLowerCase().indexOf(this.searchQuery.toLowerCase()) == 0));
-        else
-        {
-            //this.stockReport = uiState.stockReport;
-            this.showCompaniesInList(uiState.listNameShown);
-        }
 
         uiState.startIndex = this.startIndex = 0;
         uiState.elementsPerPage = this.elementsPerPage = 25;
+        this.sortBy(uiState.sortKey, false);
     }
 
     sortBy(sortKey: string, directionChange:Boolean = true): void  {
@@ -152,8 +159,8 @@ export default class ReportComponent extends Vue {
         }
         switch (sortKey) {
             case "totQty": case "hlp":
-            case "change5d": case "change30d": case "marketCap":
-            case "delQtyChange": case "close": case "change":
+            case "change5d": case "change30d": case "change60d": case "change120d":
+            case "marketCap": case "delQtyChange": case "close": case "change":
                 this.stockReport = this.stockReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
                 break;
             case "symbol":
@@ -175,6 +182,13 @@ export default class ReportComponent extends Vue {
             this.stockReport = uiState.stockReport;
             this.listName = "All";
         }
+        uiState.startIndex = this.startIndex = 0;
+    }
+
+    filterByMarketCap(start: number, end: number): void {
+        uiState.marketCapEnd = this.marketCapEnd = end;
+        uiState.marketCapStart = this.marketCapStart = start;
+        this.stockReport = (end == 0) ? this.stockReport: this.stockReport.filter(x => x.marketCap >= start && x.marketCap <= end);
         uiState.startIndex = this.startIndex = 0;
     }
 }

@@ -63,6 +63,8 @@ namespace Vue.Controllers
         public double low52week;
         public double change5d;
         public double change30d;
+        public double change60d;
+        public double change120d;
         public double hlp;
         public double DelQtyChange;
         public double marketCap;
@@ -139,6 +141,8 @@ namespace Vue.Controllers
             var bhav2d = stockService.GetStockReport(dates[index+1]).bhav.ToDictionary(x => x.CompanyId, x => x.TotalDeliveredQty);
             var bhav5d = stockService.GetStockReport(dates[index+5]).bhav.ToDictionary(x => x.CompanyId, x => x.Close);
             var bhav30d = stockService.GetStockReport(dates[index+30]).bhav.ToDictionary(x => x.CompanyId, x => x.Close);
+            var bhav60d = stockService.GetStockReport(dates[index+90]).bhav.ToDictionary(x => x.CompanyId, x => x.Close);
+            var bhav120d = stockService.GetStockReport(dates[index+120]).bhav.ToDictionary(x => x.CompanyId, x => x.Close);
 
             var marketCap = stockService.GetMarketCap();
             List<StockDailyReport> report = new List<StockDailyReport>();
@@ -178,6 +182,17 @@ namespace Vue.Controllers
                         var price = bhav30d[item.CompanyId];
                         sr.change30d = Math.Round(100 * (item.Close - price)/price, 2);
                     }
+                    if(bhav60d.ContainsKey(item.CompanyId))
+                    {
+                        var price = bhav60d[item.CompanyId];
+                        sr.change60d = Math.Round(100 * (item.Close - price)/price, 2);
+                    }
+                    if(bhav120d.ContainsKey(item.CompanyId))
+                    {
+                        var price = bhav120d[item.CompanyId];
+                        sr.change120d = Math.Round(100 * (item.Close - price)/price, 2);
+                    }
+
                     if(bhav2d.ContainsKey(item.CompanyId))
                     {
                         sr.DelQtyChange = Math.Round(1.0 * item.TotalDeliveredQty/bhav2d[item.CompanyId], 2);

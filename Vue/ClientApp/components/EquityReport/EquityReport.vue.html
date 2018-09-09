@@ -48,6 +48,8 @@
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('hlp')"><span style="color: white; font-size: 25px;">&#x21C5</span>HLP</th>
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change5d')"><span style="color: white; font-size: 25px;">&#x21C5</span>5D</th>
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change30d')"><span style="color: white; font-size: 25px;">&#x21C5</span>30D</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change60d')"><span style="color: white; font-size: 25px;">&#x21C5</span>60D</th>
+                        <th scope="col" style="cursor: pointer;" v-on:click="sortBy('change120d')"><span style="color: white; font-size: 25px;">&#x21C5</span>120D</th>
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('marketCap')"><span style="color: white; font-size: 25px;">&#x21C5</span>MarketCap</th>
                         <th scope="col" style="cursor: pointer;" v-on:click="sortBy('upDown')"><span style="color: white; font-size: 25px;">&#x21C5</span>UD</th>
                     </tr>
@@ -71,6 +73,8 @@
                         <td>{{item.hlp}}</td>
                         <td><font v-bind:color="item.change5d > 0 ? 'Green':'Red'">{{item.change5d}}</font></td>
                         <td><font v-bind:color="item.change30d > 0 ? 'Green':'Red'">{{item.change30d}}</font></td>
+                        <td><font v-bind:color="item.change60d > 0 ? 'Green':'Red'">{{item.change60d}}</font></td>
+                        <td><font v-bind:color="item.change120d > 0 ? 'Green':'Red'">{{item.change120d}}</font></td>
                         <td>{{item.marketCap}}</td>
                         <td>#{{item.upDown}}</td>
                     </tr>
