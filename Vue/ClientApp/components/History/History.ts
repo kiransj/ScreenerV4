@@ -22,10 +22,11 @@ export default class HistoryComponent extends Vue {
     ChangeList: number[] = [];
     deliveredVolumeList: number[] = [];
     tradedVolumeList: number[] = [];
+    priceList: number[] = [];
     tradesList: number[] = [];
     xaxisString: string[] = [];
     favList: string[] = [];
-
+    colors: string[] = [];
     constructor()
     {
         super();
@@ -58,11 +59,23 @@ export default class HistoryComponent extends Vue {
             data.forEach(x => {
                 this.xaxisString.push(x.date);
                 this.ChangeList.push(this.getPct(x.close, referencePrice));
-                this.deliveredVolumeList.push(this.getPct(x.totDelQty, avgDeliveredVolume));
+                /*this.deliveredVolumeList.push(this.getPct(x.totDelQty, avgDeliveredVolume));
                 this.tradedVolumeList.push(this.getPct(x.totQty, avgTradedVolume));
-                this.tradesList.push(this.getPct(x.totTrades, avgTrades));
+                this.tradesList.push(this.getPct(x.totTrades, avgTrades));*/
+                if(x.change > 0) {
+                    this.colors.push('darkgreen');
+                } else {
+                    this.colors.push('red');
+                }
+
+                this.priceList.push(x.close);
+                this.deliveredVolumeList.push(/*Math.log*/(x.totDelQty));
+                this.tradedVolumeList.push(/*Math.log*/(x.totQty));
+                this.tradesList.push(x.totTrades);
             });
-            this.showGraphs(this.xaxisString, this.ChangeList, this.deliveredVolumeList, this.tradedVolumeList, this.tradesList);
+            this.showGraphs(this.xaxisString, this.priceList, this.ChangeList, this.deliveredVolumeList, this.tradedVolumeList, this.tradesList);
+        }).catch(error => {
+            alert("Could not download data for " + this.symbol);
         });
     }
 
@@ -74,20 +87,75 @@ export default class HistoryComponent extends Vue {
         return (right - left) * 100.0/left;
     }
 
-    private showGraphs(xaxis: string[], price: number[], deliveredVolume: number[], totalVolume: number[], totalTrades: number[]) : void{
-        const plotPrice: Plotly.Data[] = [{ x: xaxis, y: price, xaxis: "Date", yaxis: "Price" }];
+    private showGraphs(xaxis: string[], price: number[], relativePrice: number[], deliveredVolume: number[], totalVolume: number[], totalTrades: number[]) : void{
+        const plotPrice: Plotly.Data[] = [{ x: xaxis, y: relativePrice, xaxis: "Date", yaxis: "Price" }];
         const plotVolume: Plotly.Data[] = [
-                { x: xaxis, y: deliveredVolume, xaxis: "Date", yaxis: "DeliveredVolume", name: "Delivered Qty" },
-                { x: xaxis, y: totalVolume, xaxis: "Date", yaxis: "TradedVolume",  name: "Traded Qty" },
-                { x: xaxis, y: totalTrades, xaxis: "Date", yaxis: "Trades",  name: "Trades" },
+                {
+                    x: xaxis,
+                    y: deliveredVolume,
+                    type: "bar",
+                    xaxis: "Date",
+                    name: "Delivered Qty" ,
+                    marker: {
+                        autocolorscale: true,
+                        color: this.colors,
+                        opacity: 0.7,
+                    }
+                },
+                {
+                    x: xaxis,
+                    y: totalVolume,
+                    type: "bar",
+                    xaxis: "Date",
+                    name: "Traded Qty" ,
+                    marker: {
+                        autocolorscale: true,
+                        color: this.colors,
+                        opacity: 0.2,
+                    },
+                    connectgaps: true
+                },
+                {
+                    x: xaxis,
+                    y:  price,
+                    type: "scatter",
+                    xaxis: "Date",
+                    name: "Price",
+                    yaxis: "y2",
+                    //fill: 'tonexty',
+                    marker: {
+                        autocolorscale: true,
+                        color: 'blue',
+                        size: 10
+                    },
+                }
+                ///{ x: xaxis, y: totalVolume, xaxis: "Date", yaxis: "TradedVolume",  name: "Traded Qty" },
+                //{ x: xaxis, y: totalTrades, xaxis: "Date", yaxis: "Trades",  name: "Trades" },
             ];
         Plotly.newPlot('pricePlot', plotPrice, {title: "Price Plot"});
-        Plotly.newPlot('volumePlot', plotVolume, {title: "Volume Plot"});
+        Plotly.newPlot('volumePlot', plotVolume, {
+                                                    title: "Volume Plot",
+                                                    xaxis:
+                                                    {
+                                                        type: "date",
+                                                        //rangeslider: {range: [this.stockHistory[0].date, this.stockHistory[this.stockHistory.length-1].date]},
+                                                    },
+                                                    yaxis:
+                                                    {
+                                                        title: "Deliverd Qty"
+                                                    },
+                                                    yaxis2:
+                                                    {
+                                                        side: "right", overlaying: 'y' as '/^y([2-9]|[1-9][0-9]+)?$/'
+                                                    },
+                                                    barmode: "stack"
+                                                 });
     }
 
     showDays(days: number): void {
         if(days == 0) days = -1;
         this.showGraphs(this.xaxisString.slice(0, days),
+                        this.priceList.slice(0, days),
                         this.ChangeList.slice(0, days),
                         this.deliveredVolumeList.slice(0, days),
                         this.tradedVolumeList.slice(0, days),
