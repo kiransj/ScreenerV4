@@ -56,6 +56,7 @@ namespace vue.Controllers
         {
             StockServices stockService = new StockServices();
             return Ok(stockService.UpdateStockDataToToday());
+            //return Ok(stockService.UpdateStockDataFor(new DateTime(2018, 9, 6)));
         }
 
         [HttpGet("[action]")]

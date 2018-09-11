@@ -87,6 +87,20 @@ export default class HistoryComponent extends Vue {
         return (right - left) * 100.0/left;
     }
 
+
+    yAxisType: Plotly.AxisType = "log";
+    ToggleLogScale(): void {
+        switch(this.yAxisType)
+        {
+            case "linear":
+                this.yAxisType = "log";
+                break;
+            case "log":
+                this.yAxisType = "linear";
+                break;
+        }
+        this.showGraphs(this.xaxisString, this.priceList, this.ChangeList, this.deliveredVolumeList, this.tradedVolumeList, this.tradesList);
+    }
     private showGraphs(xaxis: string[], price: number[], relativePrice: number[], deliveredVolume: number[], totalVolume: number[], totalTrades: number[]) : void{
         const plotPrice: Plotly.Data[] = [{ x: xaxis, y: relativePrice, xaxis: "Date", yaxis: "Price" }];
         const plotVolume: Plotly.Data[] = [
@@ -99,7 +113,7 @@ export default class HistoryComponent extends Vue {
                     marker: {
                         autocolorscale: true,
                         color: this.colors,
-                        opacity: 0.7,
+                        opacity: 0.5,
                     }
                 },
                 {
@@ -117,6 +131,19 @@ export default class HistoryComponent extends Vue {
                 },
                 {
                     x: xaxis,
+                    y: totalTrades,
+                    type: "scatter",
+                    xaxis: "Date",
+                    name: "Trades" ,
+                    yaxis: "y3",
+                    marker: {
+                        color: "#6C3483",
+                        opacity: 0.5,
+                    },
+                    connectgaps: true
+                },
+                {
+                    x: xaxis,
                     y:  price,
                     type: "scatter",
                     xaxis: "Date",
@@ -124,9 +151,8 @@ export default class HistoryComponent extends Vue {
                     yaxis: "y2",
                     //fill: 'tonexty',
                     marker: {
-                        autocolorscale: true,
-                        color: 'blue',
-                        size: 10
+                        color: 'black',
+                        size: 15
                     },
                 }
                 ///{ x: xaxis, y: totalVolume, xaxis: "Date", yaxis: "TradedVolume",  name: "Traded Qty" },
@@ -142,11 +168,19 @@ export default class HistoryComponent extends Vue {
                                                     },
                                                     yaxis:
                                                     {
-                                                        title: "Deliverd Qty"
+                                                        title: "Qty (log)",
+                                                        type: this.yAxisType
+                                                    },
+                                                    yaxis3:
+                                                    {
+                                                        side: "left", overlaying: 'y' as '/^y([2-9]|[1-9][0-9]+)?$/',
+                                                        title: "Trades",
+                                                        type: this.yAxisType
                                                     },
                                                     yaxis2:
                                                     {
-                                                        side: "right", overlaying: 'y' as '/^y([2-9]|[1-9][0-9]+)?$/'
+                                                        side: "right", overlaying: 'y' as '/^y([2-9]|[1-9][0-9]+)?$/',
+                                                        title: "Price"
                                                     },
                                                     barmode: "stack"
                                                  });

@@ -22,6 +22,24 @@ namespace MarketData
             return dbApi.GetLastUpdateDate();
         }
 
+        public async Task<int> UpdateStockDataFor(DateTime dateToUpdate)
+        {
+            int count = 0;
+            var data = await marketApi.GetDailyData(dateToUpdate);
+            if(data != null)
+            {
+                //dbApi.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
+                count += dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
+                                                            data.circuitBreaker, data.highLow52Week);
+
+            }
+            else
+            {
+                Globals.Log.Error($"Failed to Update Market data for date {dateToUpdate}");
+            }
+            return count;
+        }
+
         public async Task<int> UpdateStockDataToToday()
         {
             var updatedDate = dbApi.GetLastUpdateDate();
