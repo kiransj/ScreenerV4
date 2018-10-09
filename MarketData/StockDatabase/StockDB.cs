@@ -160,6 +160,43 @@ namespace MarketData.StockDatabase
         public string UpDown30Days { get; set;}
     }
 
+    public class NiftyBhavTable
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        [Required]
+        public int OptionId { get; set; }
+        [Required]
+        public int Day { get; set; }
+        [Required]
+        public int ExpDay { get; set; }
+        [Required]
+        public double StrikePrice { get; set; }
+        [Required]
+        public bool callOption { get; set; }
+        [Required]
+        public double Open { get; set; }
+        [Required]
+        public double Close { get; set; }
+        [Required]
+        public double High { get; set; }
+        [Required]
+        public double Low { get; set; }
+        [Required]
+        public double OpenIntrest { get; set; }
+        [Required]
+        public double TradedQty { get; set; }
+        [Required]
+        public double NumOfCont { get; set; }
+        [Required]
+        public double NumOfTrade { get; set; }
+        [Required]
+        public double NotionalValue { get; set; }
+        [Required]
+        public double PrVal { get; set; }
+    }
+
     public class StockFavList
     {
         [Key]
@@ -181,6 +218,7 @@ namespace MarketData.StockDatabase
         public DbSet<IndexBhavTable>         IndexBhav { get; set; }
         public DbSet<HighLow52WeekTable>     HighLow52Week { get; set; }
         public DbSet<StockFavList>           Favlist { get; set; }
+        public DbSet<NiftyBhavTable>         NiftyBhav { get; set; }
 
         private string dbFilename;
 
@@ -237,6 +275,11 @@ namespace MarketData.StockDatabase
             modelBuilder.Entity<HighLow52WeekTable>().HasIndex(x => x.CompanyId).IsUnique();
 
             modelBuilder.Entity<StockFavList>().HasIndex(x => new {x.Symbol, x.ListName}).IsUnique();
+
+            modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => x.Day);
+            modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => new {x.ExpDay, x.OptionId});
+            modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => new {x.ExpDay, x.StrikePrice});
+            modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => new {x.ExpDay, x.OptionId, x.callOption, x.StrikePrice});
         }
 
     }

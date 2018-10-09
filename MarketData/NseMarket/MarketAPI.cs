@@ -23,6 +23,8 @@ namespace MarketData.NseMarket
         public string CircuitBreakerFilename { get { return  $"bh{ddMMyy}.csv"; }}
         public string HighLow52WeekFilename { get { return $"Pd{ddMMyy}.csv"; }}
         public string MarketCapFilename { get { return Globals.Options.marketCapFile;} }
+        public string niftyOptionsZipFilename { get { return $"fo{dd}{MM}{yyyy}.zip";}}
+        public string niftyOptionsBhavFilename { get { return $"op{dd}{MM}{yyyy}.csv";}}
 
         private DateTime date;
         private string dd, MM, yy, yyyy, MMM, ddMMyy, ddMMMyyyy;
@@ -54,6 +56,8 @@ namespace MarketData.NseMarket
             output += $"\t\tCircuitBrk File : {CircuitBreakerFilename}\n";
             output += $"\t\t52Week HL File  : {HighLow52WeekFilename}\n";
             output += $"\t\tMarketCap File  : {MarketCapFilename}\n";
+            output += $"\t\tMarketCap File  : {niftyOptionsZipFilename}\n";
+            output += $"\t\tMarketCap File  : {niftyOptionsBhavFilename}\n";
 
             return output;
         }
@@ -72,6 +76,7 @@ namespace MarketData.NseMarket
         public List<DeliveryPosition> deliveryPosition;
         public List<CircuitBreaker> circuitBreaker;
         public List<HighLow52week> highLow52Week;
+        public List<NiftyOptionsBhav> niftyOptionBhav;
 
         public override string ToString()
         {
@@ -147,12 +152,14 @@ namespace MarketData.NseMarket
             if(dailyData.deliveryPosition.Count == 0)
             {
                 Globals.Log.Error($"No data for {date}");
+                Directory.Delete(folder, true);
                 return null;
             }
 
             Globals.Log.Info($"Extracting Zip files to {folder}");
             ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.BhavUrl], folder, true);
             ZipFile.ExtractToDirectory(urlToFileMapping[nseUrls.PRZipfileUrl], folder, true);
+            ZipFile.ExtractToDirectory($"{folder}/{nseUrls.niftyOptionsZipFilename}", folder, true);
 
             dailyData.CompanyToIndustry = csvParser.ParseCompanyToIndustryMappingFile(urlToFileMapping[nseUrls.CompanyToIndustryMappingUrl]);
             dailyData.Equitys = csvParser.ParseEquityInformationFile(urlToFileMapping[nseUrls.EquityListUrl]);
@@ -163,6 +170,7 @@ namespace MarketData.NseMarket
             dailyData.ETFBhavData = csvParser.ParseETFBhavFile($"{folder}/{nseUrls.ETFBhavFilename}");
             dailyData.circuitBreaker = csvParser.ParseCircuitBreakerFile($"{folder}/{nseUrls.CircuitBreakerFilename}");
             dailyData.highLow52Week = csvParser.ParseHighLow52WeekFile($"{folder}/{nseUrls.HighLow52WeekFilename}");
+            dailyData.niftyOptionBhav = csvParser.ParseNiftyOptionsBhavFile($"{folder}/{nseUrls.niftyOptionsBhavFilename}");
 
             // Computed Valus
             dailyData.Indexes = dailyData.IndexBhavData.Select(x => new IndexInformation(x.IndexName))

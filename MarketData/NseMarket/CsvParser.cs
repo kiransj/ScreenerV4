@@ -5,6 +5,8 @@ using Helper;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using System.Globalization;
+using System.Threading;
 
 namespace MarketData.NseMarket
 {
@@ -159,6 +161,28 @@ namespace MarketData.NseMarket
         }
     }
 
+    class CsvNiftyOptionsBhav : CsvMapping<NiftyOptionsBhav>
+    {
+        public CsvNiftyOptionsBhav() : base()
+        {
+            MapProperty(0, x => x.Instrument);
+            MapProperty(1, x => x.Symbol);
+            MapProperty(2, x => x.ExpDate);
+            MapProperty(3, x => x.StrikePrice);
+            MapProperty(4, x => x.OptType);
+            MapProperty(5, x => x.OpenPrice);
+            MapProperty(6, x => x.HiPrice);
+            MapProperty(7, x => x.LowPrice);
+            MapProperty(8, x => x.ClosePrice);
+            MapProperty(9, x => x.OpenIntrest);
+            MapProperty(10, x => x.TradedQty);
+            MapProperty(11, x => x.NumOfCont);
+            MapProperty(12, x => x.NumOfTrade);
+            MapProperty(13, x => x.NotionalValue);
+            MapProperty(14, x => x.PrVal);
+        }
+    }
+
     public class CsvParser
     {
         public List<EquityInformation> ParseEquityInformationFile(string filename)
@@ -276,6 +300,25 @@ namespace MarketData.NseMarket
                             .Select(x => x.Result)
                             .Where(x => (x != null) && (x.IsinNumber != null))
                             .ToList();
+        }
+
+        public List<NiftyOptionsBhav> ParseNiftyOptionsBhavFile(string filename)
+        {
+            CsvParser<NiftyOptionsBhav> csvParser = new CsvParser<NiftyOptionsBhav>(new CsvParserOptions(true, ','), new CsvNiftyOptionsBhav());
+
+            Globals.Log.Debug($"Parsing  Nifty Options Bhav CSV file {filename}");
+
+            CultureInfo culture_old = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            CultureInfo culture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            culture.DateTimeFormat.ShortDatePattern = "dd/MM/yyyy";
+            culture.DateTimeFormat.LongTimePattern = "";
+            Thread.CurrentThread.CurrentCulture = culture;
+            var result =  csvParser.ReadFromFile(filename, Encoding.ASCII)
+                            .Select(x => x.Result)
+                            .Where(x => (x != null))
+                            .ToList();
+            Thread.CurrentThread.CurrentCulture = culture_old;
+            return result;
         }
     }
 }

@@ -142,6 +142,25 @@ namespace MarketData.NseMarket
         public double Low52week { get; set; }
     }
 
+    public class NiftyOptionsBhav
+    {
+        public string Instrument { get; set; }
+        public string Symbol {get; set;}
+        public DateTime ExpDate {get; set;}
+        public double StrikePrice {get; set;}
+        public string OptType {get; set;}
+        public double OpenPrice {get; set;}
+        public double HiPrice {get; set;}
+        public double LowPrice {get; set;}
+        public double ClosePrice {get; set;}
+        public double OpenIntrest {get; set;}
+        public long TradedQty {get; set;}
+        public long NumOfCont {get; set;}
+        public long NumOfTrade {get; set;}
+        public double NotionalValue {get; set;}
+        public double PrVal {get; set;}
+    }
+
     public class MarketCap
     {
         public string Symbol { get; set; }
