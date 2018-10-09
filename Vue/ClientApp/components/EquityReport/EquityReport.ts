@@ -100,10 +100,12 @@ export default class ReportComponent extends Vue {
         // Filter based on listname
         this.favListNames = uiState.favListNames;
         this.favLists = uiState.favList;
-        this.showCompaniesInList(uiState.listNameShown);
+
 
         if(uiState.marketCapEnd != 0) {
             this.filterByMarketCap(uiState.marketCapStart, uiState.marketCapEnd);
+        } else {
+            this.showCompaniesInList(uiState.listNameShown);
         }
 
         // Restore the searchQuery
@@ -140,8 +142,11 @@ export default class ReportComponent extends Vue {
 
     onSearch(): void {
         uiState.searchQuery = this.searchQuery;
-        this.showCompaniesInList(uiState.listNameShown);
-        if(uiState.marketCapEnd != 0) this.filterByMarketCap(uiState.marketCapStart, uiState.marketCapEnd);
+        if(uiState.marketCapEnd != 0) {
+            this.filterByMarketCap(uiState.marketCapStart, uiState.marketCapEnd);
+        } else {
+            this.showCompaniesInList(uiState.listNameShown);
+        }
 
         if(this.searchQuery.length > 0)
             this.stockReport = this.stockReport.filter(x => (x.symbol.toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0 || x.upDown.toLowerCase().indexOf(this.searchQuery.toLowerCase()) == 0));
@@ -188,7 +193,7 @@ export default class ReportComponent extends Vue {
     filterByMarketCap(start: number, end: number): void {
         uiState.marketCapEnd = this.marketCapEnd = end;
         uiState.marketCapStart = this.marketCapStart = start;
-        this.stockReport = (end == 0) ? this.stockReport: this.stockReport.filter(x => x.marketCap >= start && x.marketCap <= end);
+        this.stockReport = (end == 0) ? uiState.stockReport: uiState.stockReport.filter(x => x.marketCap >= start && x.marketCap <= end);
         uiState.startIndex = this.startIndex = 0;
     }
 }

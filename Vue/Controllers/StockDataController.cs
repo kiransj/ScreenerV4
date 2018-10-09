@@ -46,9 +46,9 @@ namespace vue.Controllers
         public IActionResult GetStockHistory(string symbol)
         {
             byte[] encodedDataAsBytes = System.Convert.FromBase64String(symbol);
-            string returnValue = System.Text.ASCIIEncoding.ASCII.GetString(encodedDataAsBytes);
-            Globals.Log.Info($"History for {returnValue}");
-            return Ok(StockReport.GetStockHistory(returnValue));
+            string symbolName = System.Text.ASCIIEncoding.ASCII.GetString(encodedDataAsBytes);
+            Globals.Log.Info($"History for {symbolName}");
+            return Ok(StockReport.GetStockHistory(symbolName));
         }
 
         [HttpGet("[action]")]
@@ -56,7 +56,7 @@ namespace vue.Controllers
         {
             StockServices stockService = new StockServices();
             return Ok(stockService.UpdateStockDataToToday());
-            //return Ok(stockService.UpdateStockDataFor(new DateTime(2018, 9, 6)));
+            //return Ok(stockService.UpdateStockDataFor(new DateTime(2018, 9, 11)));
         }
 
         [HttpGet("[action]")]
