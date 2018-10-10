@@ -63,7 +63,7 @@ namespace Vue.Controllers
         public long tradedQty;
         public long numOfCont;
         public long numOfTrade;
-        public long notionalValue;
+        public double notionalValue;
     }
     public class StockDailyReport
     {
@@ -150,7 +150,7 @@ namespace Vue.Controllers
                 tradedQty  = (long)x.TradedQty,
                 numOfCont = (long)x.NumOfCont,
                 numOfTrade = (long)x.NumOfTrade,
-                notionalValue = (long)x.NotionalValue
+                notionalValue = x.NotionalValue
             }).ToList();
         }
 

@@ -7,8 +7,10 @@ Vue.use(VueRouter);
 const routes = [
     { path: '/', component: require('./components/Home/Home.vue.html') },
     { path: '/Equity/Report', component: require('./components/EquityReport/EquityReport.vue.html') },
+    { path: '/Options/Report', component: require('./components/OptionsReport/OptionsReport.vue.html') },
     { path: '/List', component: require('./components/List/List.vue.html') },
     { path: '/History/:symbol', component: require('./components/History/History.vue.html') },
+
 ];
 
 new Vue({
