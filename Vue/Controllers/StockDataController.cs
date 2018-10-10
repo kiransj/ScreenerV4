@@ -49,7 +49,6 @@ namespace vue.Controllers
             return Ok(result);
         }
 
-
         [HttpGet("[action]")]
         public IActionResult GetStockHistory(string symbol)
         {

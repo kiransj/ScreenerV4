@@ -151,7 +151,7 @@ namespace Vue.Controllers
                 numOfCont = (long)x.NumOfCont,
                 numOfTrade = (long)x.NumOfTrade,
                 notionalValue = x.NotionalValue
-            }).ToList();
+            }).OrderBy(x => x.callOptions).ThenBy(x => x.expiryDate).ThenBy(x => x.strikePrice).ToList();
         }
 
         static public List<StockDailyReport> GetStockReport(DateTime date)
