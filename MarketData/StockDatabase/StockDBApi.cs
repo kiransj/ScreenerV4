@@ -129,11 +129,37 @@ namespace MarketData.StockDatabase
             return ohlc;
         }
 
+        public int AddNiftyStockOptionsData(DateTime date, List<NiftyOptionsBhav> bhav)
+        {
+            int day = DateToDay(date);
+            var result = bhav.Where(x => (x.Instrument.Equals("OPTIDX") && x.Symbol.Equals("NIFTY"))).Select(x => new NiftyBhavTable() {
+                OptionId = 1,
+                Day = day,
+                ExpDay = DateToDay(x.ExpDate),
+                StrikePrice = x.StrikePrice,
+                CallOption = x.OptType == "CE",
+                Open = x.OpenPrice,
+                Close = x.ClosePrice,
+                High = x.HiPrice,
+                Low = x.LowPrice,
+                OpenIntrest = x.OpenIntrest,
+                TradedQty = x.TradedQty,
+                NumOfCont = x.NumOfCont,
+                NumOfTrade = x.NumOfTrade,
+                NotionalValue = x.NotionalValue,
+                PrVal = x.PrVal
+            });
+            stockDatabase.NiftyBhav.AddRange(result);
+            stockDatabase.SaveChanges();
+            return result.Count();
+        }
+
         public int AddBhavData(DateTime date, List<Bhav> bhav,
                                              List<DeliveryPosition> deliveryPosition,
                                              List<IndexBhav> indexBhav,
                                              List<CircuitBreaker> circuitBreaker,
-                                             List<HighLow52week> highLow52Week)
+                                             List<HighLow52week> highLow52Week,
+                                             List<NiftyOptionsBhav> optionsbhav)
         {
             Globals.Log.Info($"Updating Bhav/IndexBhav for date {bhav[0].TimeStamp} to DB");
             var mapping = stockDatabase.CompanyInformation.ToDictionary(x => x.Symbol, x => x.CompanyId);
@@ -201,6 +227,26 @@ namespace MarketData.StockDatabase
                     UpDown30Days = bhavDict.ContainsKey(item.Value.Symbol) ? bhavDict[item.Value.Symbol] : ""
                 });
             }
+
+            var result = optionsbhav.Where(x => (x.Instrument.Equals("OPTIDX") && x.Symbol.Equals("NIFTY"))).Select(x => new NiftyBhavTable() {
+                OptionId = 1,
+                Day = DateToDay(date),
+                ExpDay = DateToDay(x.ExpDate),
+                StrikePrice = x.StrikePrice,
+                CallOption = x.OptType == "CE",
+                Open = x.OpenPrice,
+                Close = x.ClosePrice,
+                High = x.HiPrice,
+                Low = x.LowPrice,
+                OpenIntrest = x.OpenIntrest,
+                TradedQty = x.TradedQty,
+                NumOfCont = x.NumOfCont,
+                NumOfTrade = x.NumOfTrade,
+                NotionalValue = x.NotionalValue,
+                PrVal = x.PrVal
+            });
+            stockDatabase.NiftyBhav.AddRange(result);
+
             return stockDatabase.SaveChanges();
         }
 

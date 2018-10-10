@@ -30,7 +30,7 @@ namespace MarketData
             {
                 //dbApi.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
                 count += dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
-                                                            data.circuitBreaker, data.highLow52Week);
+                                                            data.circuitBreaker, data.highLow52Week, data.niftyOptionBhav);
 
             }
             else
@@ -40,23 +40,51 @@ namespace MarketData
             return count;
         }
 
-        public async Task<int> UpdateStockDataToToday()
+        public async Task<int> UpdateNiftyOptionsToToday()
         {
-            var updatedDate = dbApi.GetLastUpdateDate();
-            int daysToUpdate = (DateTime.Now - updatedDate).Days;
+            var updatedDate = dbApi.GetTradedDaysN();
             int updatedDays = 0;
-            Globals.Log.Info($"Last Updated on {updatedDate.ToString("dd-MMM-yyyy")}. Need to update for {daysToUpdate} days");
-            //for(int i = 1; i <= daysToUpdate; i++)
+            for(int i = 0; i < updatedDate.Count(); i++)
             {
-                var dateToUpdate = updatedDate.AddDays(0);
+                var dateToUpdate = updatedDate[i];
                 Globals.Log.Info($"Updating Market data for date {dateToUpdate}");
 
                 var data = await marketApi.GetDailyData(dateToUpdate);
                 if(data != null)
                 {
                     //dbApi.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
-                    /*dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
-                                                             data.circuitBreaker, data.highLow52Week);*/
+                    //dbApi.AddNiftyStockOptionsData(dateToUpdate, data.niftyOptionBhav);
+                    dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
+                                                    data.circuitBreaker, data.highLow52Week, data.niftyOptionBhav);
+
+                    updatedDays++;
+                }
+                else
+                {
+                    Globals.Log.Error($"Failed to Update Market data for date {dateToUpdate}");
+                }
+            }
+            return updatedDays;
+        }
+
+        public async Task<int> UpdateStockDataToToday()
+        {
+            var updatedDate = dbApi.GetLastUpdateDate();
+            int daysToUpdate = (DateTime.Now - updatedDate).Days;
+            int updatedDays = 0;
+            Globals.Log.Info($"Last Updated on {updatedDate.ToString("dd-MMM-yyyy")}. Need to update for {daysToUpdate} days");
+            for(int i = 1; i <= daysToUpdate; i++)
+            {
+                var dateToUpdate = updatedDate.AddDays(i);
+                Globals.Log.Info($"Updating Market data for date {dateToUpdate}");
+
+                var data = await marketApi.GetDailyData(dateToUpdate);
+                if(data != null)
+                {
+                    //dbApi.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
+                    //dbApi.AddNiftyStockOptionsData(dateToUpdate, data.niftyOptionBhav);
+                    dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
+                                                             data.circuitBreaker, data.highLow52Week, data.niftyOptionBhav);
 
                     updatedDays++;
                 }

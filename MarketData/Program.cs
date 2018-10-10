@@ -39,7 +39,7 @@ namespace MarketData
                         int count = api.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
                         count += api.AddBhavData(date1, data.BhavData, data.deliveryPosition,
                                                                             data.IndexBhavData, data.circuitBreaker,
-                                                                            data.highLow52Week);
+                                                                            data.highLow52Week, data.niftyOptionBhav);
                         Globals.Log.Info($"Updated {count} rows");
                     }
                     else
@@ -55,6 +55,7 @@ namespace MarketData
             Globals.InitGlobals("Options.json");
             StockServices ss = new StockServices();
             var t = ss.UpdateStockDataToToday();
+            //var t = ss.UpdateNiftyOptionsToToday();
             t.Wait();
             Globals.Log.Info($"Updated data for {t.Result} days");
         }

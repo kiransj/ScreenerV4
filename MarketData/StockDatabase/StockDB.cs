@@ -174,7 +174,7 @@ namespace MarketData.StockDatabase
         [Required]
         public double StrikePrice { get; set; }
         [Required]
-        public bool callOption { get; set; }
+        public bool CallOption { get; set; }
         [Required]
         public double Open { get; set; }
         [Required]
@@ -279,7 +279,7 @@ namespace MarketData.StockDatabase
             modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => x.Day);
             modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => new {x.ExpDay, x.OptionId});
             modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => new {x.ExpDay, x.StrikePrice});
-            modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => new {x.ExpDay, x.OptionId, x.callOption, x.StrikePrice});
+            modelBuilder.Entity<NiftyBhavTable>().HasIndex(x => new {x.ExpDay, x.OptionId, x.CallOption, x.StrikePrice});
         }
 
     }

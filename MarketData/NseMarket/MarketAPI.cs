@@ -170,11 +170,12 @@ namespace MarketData.NseMarket
             dailyData.ETFBhavData = csvParser.ParseETFBhavFile($"{folder}/{nseUrls.ETFBhavFilename}");
             dailyData.circuitBreaker = csvParser.ParseCircuitBreakerFile($"{folder}/{nseUrls.CircuitBreakerFilename}");
             dailyData.highLow52Week = csvParser.ParseHighLow52WeekFile($"{folder}/{nseUrls.HighLow52WeekFilename}");
-            dailyData.niftyOptionBhav = csvParser.ParseNiftyOptionsBhavFile($"{folder}/{nseUrls.niftyOptionsBhavFilename}");
 
             // Computed Valus
             dailyData.Indexes = dailyData.IndexBhavData.Select(x => new IndexInformation(x.IndexName))
                                                        .ToList();
+
+            dailyData.niftyOptionBhav = csvParser.ParseNiftyOptionsBhavFile($"{folder}/{nseUrls.niftyOptionsBhavFilename}");
 
             return dailyData;
         }

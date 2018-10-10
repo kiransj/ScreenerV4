@@ -12,6 +12,17 @@ namespace MarketData.StockDatabase
             return DayToDate(stockDatabase.EquityBhav.Select(x => x.Day).Max());
         }
 
+        public List<DateTime> GetTradedDaysN() {
+            var result = stockDatabase.EquityBhav.Select(x => x.Day)
+                                                 .OrderBy(x => x)
+                                                 .GroupBy(x => x)
+                                                 .Select(x => x.Key)
+                                                 .Select(x => DayToDate(x))
+                                                 .ToList();
+
+            return result;
+        }
+
         public List<EquityBhavTable> GetStockData(DateTime date)
         {
             int day = DateToDay(date);
