@@ -135,6 +135,12 @@ namespace MarketData
             return (result1, result2, result3);
         }
 
+        public List<NiftyBhavTable> GetNiftyOptionsData(DateTime date)
+        {
+            var result = dbApi.GetNiftyOptionsData(date);
+            return result;
+        }
+
         public List<DateTime> GetTradedDates()
         {
             return dbApi.GetTradedDays();

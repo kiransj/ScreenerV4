@@ -41,6 +41,14 @@ namespace MarketData.StockDatabase
             return data;
         }
 
+        public List<NiftyBhavTable> GetNiftyOptionsData(DateTime date)
+        {
+            int day = DateToDay(date);
+            Globals.Log.Debug($"Querying database for niftyOptions data for date {date.ToString("dd-MMM-yyyy")}");
+            var data = stockDatabase.NiftyBhav.Where(x => x.Day == day).ToList();
+            return data;
+        }
+
         public List<HighLow52WeekTable> GetHighLow52Week()
         {
             Globals.Log.Debug($"Querying database for 52 week High low");

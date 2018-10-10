@@ -228,6 +228,7 @@ namespace MarketData.StockDatabase
                 });
             }
 
+            // For now only save nifty index options. Later we need to add support for 
             var result = optionsbhav.Where(x => (x.Instrument.Equals("OPTIDX") && x.Symbol.Equals("NIFTY"))).Select(x => new NiftyBhavTable() {
                 OptionId = 1,
                 Day = DateToDay(date),

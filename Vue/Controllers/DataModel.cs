@@ -48,6 +48,23 @@ namespace Vue.Controllers
             IndexList = index.Select(x => x.IndexName).ToList();
         }
     }
+
+    public class NiftyOptionsReport
+    {
+        public int optionsId;
+        public DateTime expiryDate;
+        public double strikePrice;
+        public bool callOptions;
+        public double open;
+        public double close;
+        public double high;
+        public double low;
+        public long openIntrest;
+        public long tradedQty;
+        public long numOfCont;
+        public long numOfTrade;
+        public long notionalValue;
+    }
     public class StockDailyReport
     {
         public string symbol;
@@ -115,6 +132,26 @@ namespace Vue.Controllers
                                    totQty = item.TotalTradedQty
                                 }).ToList();
             return history;
+        }
+
+        static public List<NiftyOptionsReport> GetNiftyOptionsData(DateTime date)
+        {
+            StockServices ss = new StockServices();
+            return ss.GetNiftyOptionsData(date).Select(x => new NiftyOptionsReport() {
+                optionsId = x.OptionId,
+                expiryDate = ss.DayToDate(x.ExpDay),
+                strikePrice = x.StrikePrice,
+                callOptions = x.CallOption,
+                open = x.Open,
+                close = x.Close,
+                high = x.High,
+                low = x.Low,
+                openIntrest = (long)x.OpenIntrest,
+                tradedQty  = (long)x.TradedQty,
+                numOfCont = (long)x.NumOfCont,
+                numOfTrade = (long)x.NumOfTrade,
+                notionalValue = (long)x.NotionalValue
+            }).ToList();
         }
 
         static public List<StockDailyReport> GetStockReport(DateTime date)

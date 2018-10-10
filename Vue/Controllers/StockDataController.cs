@@ -43,6 +43,14 @@ namespace vue.Controllers
         }
 
         [HttpGet("[action]")]
+        public IActionResult GetLatestNiftyOptionsData()
+        {
+            var result = StockReport.GetNiftyOptionsData(stockService.GetLastUpdatedDate());
+            return Ok(result);
+        }
+
+
+        [HttpGet("[action]")]
         public IActionResult GetStockHistory(string symbol)
         {
             byte[] encodedDataAsBytes = System.Convert.FromBase64String(symbol);
