@@ -16,6 +16,7 @@ interface OptionsReport {
     numOfCont: number;
     numOfTrade: number;
     notionalValue: number;
+    change: number;
 }
 
 let optionsReport: OptionsReport[] = [];
@@ -38,9 +39,13 @@ export default class OptionsReportComponent extends Vue {
             fetch('/api/StockData/GetLatestNiftyOptionsData')
             .then(response => response.json() as Promise<OptionsReport[]>)
             .then(data => {
+                data.forEach(x => {
+                    x.change = Math.round(100.0 * (x.close - x.open)/x.open);
+                    x.notionalValue = Math.round(x.notionalValue/10000000);
+                });
                 optionsReport = this.optionsReport = data;
                 this.dates = data.map(x => x.expiryDate);
-                this.dates = this.dates.filter((el, i, a) => i === a.indexOf(el))
+                this.dates = this.dates.filter((el, i, a) => i === a.indexOf(el));
             });
         }
     }
@@ -66,6 +71,20 @@ export default class OptionsReportComponent extends Vue {
             this.optionsReport = this.optionsReport.filter(x => x.callOptions);
         } else {
             this.optionsReport = this.optionsReport.filter(x => !x.callOptions);
+        }
+    }
+
+
+    sortReverse:number = -1;
+    sortBy(sortKey: string, directionChange:Boolean = true): void  {
+        if(directionChange) {
+            this.sortReverse *= -1;
+        }
+        switch (sortKey) {
+            case "strikePrice": case "openIntrest": case "change":
+            case "tradedQty": case "numOfCont": case "numOfTrade": case "notionalValue":
+                this.optionsReport = this.optionsReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
+                break;
         }
     }
 }
