@@ -1,0 +1,47 @@
+<template>
+    <div>
+        <h3>Expiry Date: {{expDate}}, StrikePrice: {{strikePrice}}, optionType: {{callOption.localeCompare("true") == 0 ? "call": "put"}}</h3>
+        <div class="row" style="overflow: scroll; overflow-x: auto; height: 85vh; padding-top: 5px">
+                <table class="table table-striped table-bordered table-hover table-fixed">
+                    <thead class="thead-dark">
+                        <tr>
+                           <!-- <th>Id</th> -->
+                            <th>expiry</th>
+                            <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('strikePrice')">strike</th>
+                            <th>Type</th>
+                            <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('change')">Change</th>
+                            <th>open</th>
+                            <th>close</th>
+                            <th>high</th>
+                            <th>low</th>
+                            <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('openIntrest')">OI</th>
+                            <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('oi_change')">OI %</th>
+                            <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('openInterestPrev')">Prev OI</th>
+                            <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('tradedQty')">tradedQty</th>
+                            <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('notionalValue')">Value (Cr)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in optionsReport">
+                            <!--<td>{{item.optionsId}}</td>-->
+                            <td>{{item.expiryDate}}</td>
+                            <td><router-link v-bind:to='"/Options/History/"+item.expiryDate+"/"+item.strikePrice+"/"+item.callOptions'>{{item.strikePrice}}</router-link></td>
+                            <td>{{item.callOptions == true ? "Call" : "Put"}}</td>
+                            <td><font v-bind:color="item.change >= 0 ? 'Green':'Red'">{{item.change}}%</font></td>
+                            <td>{{item.open}}</td>
+                            <td>{{item.close}}</td>
+                            <td>{{item.high}}</td>
+                            <td>{{item.low}}</td>
+                            <td>{{item.openIntrest}}</td>
+                            <td>{{item.oi_change}}</td>
+                            <td>{{item.openInterestPrev}}</td>
+                            <td>{{item.tradedQty}}</td>
+                            <td>{{item.notionalValue}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</template>
+
+<script src="./OptionsHistory.ts"></script>

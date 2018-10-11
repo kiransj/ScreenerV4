@@ -49,6 +49,16 @@ namespace MarketData.StockDatabase
             return data;
         }
 
+        public List<NiftyBhavTable> GetNiftyOptionsDataFor(DateTime expDate, long strikePrice, bool callOptions)
+        {
+            int day = DateToDay(expDate);
+            Globals.Log.Debug($"Querying database for niftyOptions data for {expDate.ToString("dd-MMM-yyyy")} and strike price {strikePrice} and callOptions : {callOptions.ToString()}");
+
+            var data = stockDatabase.NiftyBhav.Where(x => (x.ExpDay == day && x.StrikePrice == strikePrice && x.CallOption == callOptions)).ToList();
+
+            return data;
+        }
+
         public List<HighLow52WeekTable> GetHighLow52Week()
         {
             Globals.Log.Debug($"Querying database for 52 week High low");

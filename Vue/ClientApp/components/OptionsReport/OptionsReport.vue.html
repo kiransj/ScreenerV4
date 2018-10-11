@@ -3,7 +3,7 @@
         <div class="row">
             <button class="LinkButton active" v-on:click="ShowOptionsForExpiryDate('')"> Show all</button>
             <div id="myBtnContainer" v-for="item in dates">
-                <button style="padding: 10px;" class="LinkButton" v-on:click="ShowOptionsForExpiryDate(item)"> {{item | DateToString}}</button>
+                <button style="padding: 10px;" class="LinkButton" v-on:click="ShowOptionsForExpiryDate(item)"> {{item}}</button>
             </div>
             <button style="padding: 10px;" class="LinkButton" v-on:click="ShowOptionsType(1)"> Call </button>
             <button style="padding: 10px;" class="LinkButton" v-on:click="ShowOptionsType(0)"> Put </button>
@@ -18,7 +18,7 @@
                         <th>Type</th>
                         <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('change')">Change</th>
                         <th>open</th>
-                        <th>close</th>
+                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('close')">close</th>
                         <th>high</th>
                         <th>low</th>
                         <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('openIntrest')">OI</th>
@@ -31,8 +31,8 @@
                 <tbody>
                     <tr v-for="item in optionsReport">
                         <!--<td>{{item.optionsId}}</td>-->
-                        <td>{{item.expiryDate | DateToString}}</td>
-                        <td>{{item.strikePrice}}</td>
+                        <td>{{item.expiryDate}}</td>
+                        <td><router-link v-bind:to='"/Options/History/"+item.expiryDate+"/"+item.strikePrice+"/"+item.callOptions'>{{item.strikePrice}}</router-link></td>
                         <td>{{item.callOptions == true ? "Call" : "Put"}}</td>
                         <td><font v-bind:color="item.change >= 0 ? 'Green':'Red'">{{item.change}}%</font></td>
                         <td>{{item.open}}</td>

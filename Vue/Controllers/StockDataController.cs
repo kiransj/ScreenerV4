@@ -51,6 +51,13 @@ namespace vue.Controllers
         }
 
         [HttpGet("[action]")]
+        public ActionResult GetNiftyOptionsDataFor(string date, long strikePrice, bool callOption)
+        {
+            var d = DateTime.ParseExact(date, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            return Ok(StockReport.GetNiftyOptionsDataFor(d, strikePrice, callOption));
+        }
+
+        [HttpGet("[action]")]
         public IActionResult GetStockHistory(string symbol)
         {
             byte[] encodedDataAsBytes = System.Convert.FromBase64String(symbol);

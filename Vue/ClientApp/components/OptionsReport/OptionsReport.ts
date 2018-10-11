@@ -45,6 +45,7 @@ export default class OptionsReportComponent extends Vue {
                     x.change = Math.round(100.0 * (x.close - x.open)/x.open);
                     x.notionalValue = Math.round(x.notionalValue/10000000);
                     x.oi_change = Math.round(100*(x.openIntrest - x.openInterestPrev)/x.openInterestPrev);
+                    x.expiryDate = Moment(x.expiryDate).format('DD-MM-YYYY')
                 });
                 optionsReport = this.optionsReport = data;
                 this.dates = data.map(x => x.expiryDate);
@@ -61,9 +62,9 @@ export default class OptionsReportComponent extends Vue {
         this.currentDisplayedDate = date;
         if(date.length != 0)
         {
-            var d = Moment(date).format('DD-MM-YYYY');
+            var d = date;//Moment(date).format('DD-MM-YYYY');
             this.currentDisplayedDate = d;
-            this.optionsReport = optionsReport.filter(x => Moment(x.expiryDate).format('DD-MM-YYYY').localeCompare(d) == 0);
+            this.optionsReport = optionsReport.filter(x => x.expiryDate.localeCompare(d) == 0);
         }
         else
             this.optionsReport = optionsReport;
@@ -85,7 +86,7 @@ export default class OptionsReportComponent extends Vue {
         }
         switch (sortKey) {
             case "strikePrice": case "openIntrest": case "change": case "oi_change": case "openInterestPrev":
-            case "tradedQty": case "numOfCont": case "numOfTrade": case "notionalValue":
+            case "tradedQty": case "numOfCont": case "numOfTrade": case "notionalValue": case "close":
                 this.optionsReport = this.optionsReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
                 break;
         }

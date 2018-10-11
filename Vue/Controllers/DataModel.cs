@@ -135,6 +135,28 @@ namespace Vue.Controllers
             return history;
         }
 
+        static public List<NiftyOptionsReport> GetNiftyOptionsDataFor(DateTime expDate, long strikePrice, bool callOption)
+        {
+            StockServices ss = new StockServices();
+            var result = ss.GetNiftyOptionsDataFor(expDate, strikePrice, callOption).Select(x => new NiftyOptionsReport() {
+                optionsId = x.OptionId,
+                expiryDate = ss.DayToDate(x.Day),
+                strikePrice = x.StrikePrice,
+                callOptions = x.CallOption,
+                open = x.Open,
+                close = x.Close,
+                high = x.High,
+                low = x.Low,
+                openIntrest = (long)x.OpenIntrest,
+                openInterestPrev = 0,
+                tradedQty  = (long)x.TradedQty,
+                numOfCont = (long)x.NumOfCont,
+                numOfTrade = (long)x.NumOfTrade,
+                notionalValue = x.NotionalValue
+            }).OrderBy(x => x.expiryDate).ToList();
+            return result;
+        }
+
         static public List<NiftyOptionsReport> GetNiftyOptionsData(DateTime date, DateTime compareDate)
         {
             StockServices ss = new StockServices();
