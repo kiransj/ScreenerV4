@@ -45,7 +45,8 @@ namespace vue.Controllers
         [HttpGet("[action]")]
         public IActionResult GetLatestNiftyOptionsData()
         {
-            var result = StockReport.GetNiftyOptionsData(stockService.GetLastUpdatedDate());
+            var tradedDays = stockService.GetTradedDates();
+            var result = StockReport.GetNiftyOptionsData(tradedDays[0], tradedDays[1]);
             return Ok(result);
         }
 

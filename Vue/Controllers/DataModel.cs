@@ -60,6 +60,7 @@ namespace Vue.Controllers
         public double high;
         public double low;
         public long openIntrest;
+        public long openInterestPrev;
         public long tradedQty;
         public long numOfCont;
         public long numOfTrade;
@@ -134,10 +135,21 @@ namespace Vue.Controllers
             return history;
         }
 
-        static public List<NiftyOptionsReport> GetNiftyOptionsData(DateTime date)
+        static public List<NiftyOptionsReport> GetNiftyOptionsData(DateTime date, DateTime compareDate)
         {
             StockServices ss = new StockServices();
-            return ss.GetNiftyOptionsData(date).Select(x => new NiftyOptionsReport() {
+            var dict = new Dictionary<Tuple<int, double, bool>, long> ();
+
+            dict = ss.GetNiftyOptionsData(compareDate).Select(x => new {
+                                                            expDate = x.ExpDay,
+                                                            strikePrice = x.StrikePrice,
+                                                            openInterest = (long)x.OpenIntrest,
+                                                            type = x.CallOption
+                                                        })
+                                                      .ToDictionary(x => new Tuple<int, double, bool>(x.expDate, x.strikePrice, x.type), x => x.openInterest);
+
+            long tryGetValue = 0;
+            var result = ss.GetNiftyOptionsData(date).Select(x => new NiftyOptionsReport() {
                 optionsId = x.OptionId,
                 expiryDate = ss.DayToDate(x.ExpDay),
                 strikePrice = x.StrikePrice,
@@ -147,11 +159,14 @@ namespace Vue.Controllers
                 high = x.High,
                 low = x.Low,
                 openIntrest = (long)x.OpenIntrest,
+                openInterestPrev = dict.TryGetValue(new Tuple<int, double, bool>(x.ExpDay, x.StrikePrice, x.CallOption), out tryGetValue) ? tryGetValue : 0,
                 tradedQty  = (long)x.TradedQty,
                 numOfCont = (long)x.NumOfCont,
                 numOfTrade = (long)x.NumOfTrade,
                 notionalValue = x.NotionalValue
             }).OrderBy(x => x.callOptions).ThenBy(x => x.expiryDate).ThenBy(x => x.strikePrice).ToList();
+
+            return result;
         }
 
         static public List<StockDailyReport> GetStockReport(DateTime date)

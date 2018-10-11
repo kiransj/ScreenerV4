@@ -21,10 +21,10 @@
                         <th>close</th>
                         <th>high</th>
                         <th>low</th>
-                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('openIntrest')">Interest</th>
+                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('openIntrest')">OI</th>
+                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('oi_change')">OI %</th>
+                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('openInterestPrev')">Prev OI</th>
                         <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('tradedQty')">tradedQty</th>
-                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('numOfCont')">Contracts</th>
-                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('numOfTrade')">Trades</th>
                         <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('notionalValue')">Value (Cr)</th>
                     </tr>
                 </thead>
@@ -40,9 +40,9 @@
                         <td>{{item.high}}</td>
                         <td>{{item.low}}</td>
                         <td>{{item.openIntrest}}</td>
+                        <td>{{item.oi_change}}</td>
+                        <td>{{item.openInterestPrev}}</td>
                         <td>{{item.tradedQty}}</td>
-                        <td>{{item.numOfCont}}</td>
-                        <td>{{item.numOfTrade}}</td>
                         <td>{{item.notionalValue}}</td>
                     </tr>
                 </tbody>
