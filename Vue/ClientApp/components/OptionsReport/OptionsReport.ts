@@ -21,7 +21,16 @@ interface OptionsReport {
     oi_change: number;
 }
 
-let optionsReport: OptionsReport[] = [];
+class UIState {
+    optionReport: OptionsReport[] = [];
+    currentDisplayedDate: string = "";
+    dates: string[] = [];
+    callType: number = 0;
+    sortKey:string = "";
+    sortReverse:number = -1;
+}
+
+let uiState:UIState = new UIState();
 // Lets save the UI state statically
 @Component
 export default class OptionsReportComponent extends Vue {
@@ -35,7 +44,7 @@ export default class OptionsReportComponent extends Vue {
     }
 
     created(): void {
-        if(this.optionsReport.length == 0)
+        if(uiState.optionReport.length == 0)
         {
             //this.symbol = this.$route.params.symbol;
             fetch('/api/StockData/GetLatestNiftyOptionsData')
@@ -47,10 +56,18 @@ export default class OptionsReportComponent extends Vue {
                     x.oi_change = Math.round(100*(x.openIntrest - x.openInterestPrev)/x.openInterestPrev);
                     x.expiryDate = Moment(x.expiryDate).format('DD-MM-YYYY')
                 });
-                optionsReport = this.optionsReport = data;
                 this.dates = data.map(x => x.expiryDate);
                 this.dates = this.dates.filter((el, i, a) => i === a.indexOf(el));
+
+                uiState.optionReport = this.optionsReport = data;
+                uiState.dates = this.dates;
             });
+        } else {
+            this.sortReverse = uiState.sortReverse;
+            this.ShowOptionsForExpiryDate(uiState.currentDisplayedDate);
+            this.ShowOptionsType(uiState.callType);
+            this.sortBy(uiState.sortKey, false);
+            this.dates = uiState.dates;
         }
     }
 
@@ -60,30 +77,34 @@ export default class OptionsReportComponent extends Vue {
 
     ShowOptionsForExpiryDate(date: string): void {
         this.currentDisplayedDate = date;
+        this.currentDisplayedDate = uiState.currentDisplayedDate = date;
         if(date.length != 0)
-        {
-            var d = date;//Moment(date).format('DD-MM-YYYY');
-            this.currentDisplayedDate = d;
-            this.optionsReport = optionsReport.filter(x => x.expiryDate.localeCompare(d) == 0);
-        }
+            this.optionsReport = uiState.optionReport.filter(x => x.expiryDate.localeCompare(date) == 0);
         else
-            this.optionsReport = optionsReport;
+            this.optionsReport = uiState.optionReport;
     }
 
+    callType: number = -1;
     ShowOptionsType(callType: number) {
-        if(callType) {
+        uiState.callType = this.callType = callType;
+        this.ShowOptionsForExpiryDate(this.currentDisplayedDate);
+        if(callType == 0) {
             this.optionsReport = this.optionsReport.filter(x => x.callOptions);
-        } else {
+        } else if(callType == 1)  {
             this.optionsReport = this.optionsReport.filter(x => !x.callOptions);
         }
     }
 
 
+    sortKey:string = "";
     sortReverse:number = -1;
     sortBy(sortKey: string, directionChange:Boolean = true): void  {
+        this.sortKey = sortKey;
         if(directionChange) {
             this.sortReverse *= -1;
         }
+        uiState.sortKey = this.sortKey;
+        uiState.sortReverse = this.sortReverse;
         switch (sortKey) {
             case "strikePrice": case "openIntrest": case "change": case "oi_change": case "openInterestPrev":
             case "tradedQty": case "numOfCont": case "numOfTrade": case "notionalValue": case "close":
