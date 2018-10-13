@@ -54,7 +54,7 @@ namespace MarketData.StockDatabase
             int day = DateToDay(expDate);
             Globals.Log.Debug($"Querying database for niftyOptions data for {expDate.ToString("dd-MMM-yyyy")} and strike price {strikePrice} and callOptions : {callOptions.ToString()}");
 
-            var data = stockDatabase.NiftyBhav.Where(x => (x.ExpDay == day && x.StrikePrice == strikePrice && x.CallOption == callOptions)).ToList();
+            var data = stockDatabase.NiftyBhav.Where(x => (x.ExpDay == day && x.StrikePrice == strikePrice && x.CallOption == callOptions)) .ToList();
 
             return data;
         }

@@ -65,6 +65,7 @@ namespace Vue.Controllers
         public long numOfCont;
         public long numOfTrade;
         public double notionalValue;
+        public double lastClose;
     }
     public class StockDailyReport
     {
@@ -153,24 +154,25 @@ namespace Vue.Controllers
                 numOfCont = (long)x.NumOfCont,
                 numOfTrade = (long)x.NumOfTrade,
                 notionalValue = x.NotionalValue
-            }).OrderBy(x => x.expiryDate).ToList();
+            }).OrderByDescending(x => x.expiryDate).ToList();
             return result;
         }
 
         static public List<NiftyOptionsReport> GetNiftyOptionsData(DateTime date, DateTime compareDate)
         {
             StockServices ss = new StockServices();
-            var dict = new Dictionary<Tuple<int, double, bool>, long> ();
+            var dict = new Dictionary<Tuple<int, double, bool>, Tuple<long, double>> ();
 
             dict = ss.GetNiftyOptionsData(compareDate).Select(x => new {
                                                             expDate = x.ExpDay,
                                                             strikePrice = x.StrikePrice,
                                                             openInterest = (long)x.OpenIntrest,
-                                                            type = x.CallOption
+                                                            type = x.CallOption,
+                                                            close = x.Close
                                                         })
-                                                      .ToDictionary(x => new Tuple<int, double, bool>(x.expDate, x.strikePrice, x.type), x => x.openInterest);
+                                                      .ToDictionary(x => new Tuple<int, double, bool>(x.expDate, x.strikePrice, x.type), x => Tuple.Create(x.openInterest, x.close));
 
-            long tryGetValue = 0;
+            Tuple<long, double> tryGetValue;
             var result = ss.GetNiftyOptionsData(date).Select(x => new NiftyOptionsReport() {
                 optionsId = x.OptionId,
                 expiryDate = ss.DayToDate(x.ExpDay),
@@ -181,11 +183,12 @@ namespace Vue.Controllers
                 high = x.High,
                 low = x.Low,
                 openIntrest = (long)x.OpenIntrest,
-                openInterestPrev = dict.TryGetValue(new Tuple<int, double, bool>(x.ExpDay, x.StrikePrice, x.CallOption), out tryGetValue) ? tryGetValue : 0,
+                openInterestPrev = dict.TryGetValue(new Tuple<int, double, bool>(x.ExpDay, x.StrikePrice, x.CallOption), out tryGetValue) ? tryGetValue.Item1 : 0,
                 tradedQty  = (long)x.TradedQty,
                 numOfCont = (long)x.NumOfCont,
                 numOfTrade = (long)x.NumOfTrade,
-                notionalValue = x.NotionalValue
+                notionalValue = x.NotionalValue,
+                lastClose = dict.TryGetValue(new Tuple<int, double, bool>(x.ExpDay, x.StrikePrice, x.CallOption), out tryGetValue) ? tryGetValue.Item2 : 0
             }).OrderBy(x => x.callOptions).ThenBy(x => x.expiryDate).ThenBy(x => x.strikePrice).ToList();
 
             return result;

@@ -19,13 +19,14 @@ interface OptionsReport {
     openInterestPrev: number;
     change: number;
     oi_change: number;
+    lastClose: number;
 }
 
 class UIState {
     optionReport: OptionsReport[] = [];
     currentDisplayedDate: string = "";
     dates: string[] = [];
-    callType: number = 0;
+    callType: number = -1;
     sortKey:string = "";
     sortReverse:number = -1;
 }
@@ -51,7 +52,7 @@ export default class OptionsReportComponent extends Vue {
             .then(response => response.json() as Promise<OptionsReport[]>)
             .then(data => {
                 data.forEach(x => {
-                    x.change = Math.round(100.0 * (x.close - x.open)/x.open);
+                    x.change = x.lastClose != 0 ? Math.round(100.0 * (x.close - x.lastClose)/x.lastClose) : 0;
                     x.notionalValue = Math.round(x.notionalValue/10000000);
                     x.oi_change = Math.round(100*(x.openIntrest - x.openInterestPrev)/x.openInterestPrev);
                     x.expiryDate = Moment(x.expiryDate).format('DD-MM-YYYY')
@@ -89,9 +90,9 @@ export default class OptionsReportComponent extends Vue {
         uiState.callType = this.callType = callType;
         this.ShowOptionsForExpiryDate(this.currentDisplayedDate);
         if(callType == 0) {
-            this.optionsReport = this.optionsReport.filter(x => x.callOptions);
-        } else if(callType == 1)  {
             this.optionsReport = this.optionsReport.filter(x => !x.callOptions);
+        } else if(callType == 1)  {
+            this.optionsReport = this.optionsReport.filter(x => x.callOptions);
         }
     }
 

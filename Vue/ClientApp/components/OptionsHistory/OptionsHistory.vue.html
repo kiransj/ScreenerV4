@@ -9,29 +9,29 @@
                 <thead class="thead-dark">
                     <tr>
                         <!-- <th>Id</th> -->
-                        <th>Date</th>
-                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('change')">Change</th>
-                        <th>open</th>
-                        <th>close</th>
-                        <th>high</th>
-                        <th>low</th>
-                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('openIntrest')">OI</th>
-                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('tradedQty')">tradedQty</th>
-                        <th scope="col" style="cursor: pointer;" class="LinkButton" v-on:click="sortBy('notionalValue')">Value(Cr)</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Change</th>
+                        <th scope="col">open</th>
+                        <th scope="col">close</th>
+                        <th scope="col">high</th>
+                        <th scope="col">low</th>
+                        <th scope="col">OI</th>
+                        <th scope="col">OI Change</th>
+                        <th scope="col">tradedQty</th>
+                        <th scope="col">Value(Cr)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in optionsReport">
                         <!--<td>{{item.optionsId}}</td>-->
                         <td>{{item.expiryDate}}</td>
-                        <td>
-                            <font v-bind:color="item.change >= 0 ? 'Green':'Red'">{{item.change}}%</font>
-                        </td>
+                        <td><font v-bind:color="item.change >= 0 ? 'Green':'Red'">{{item.change}}%</font></td>
                         <td>{{item.open}}</td>
                         <td>{{item.close}}</td>
                         <td>{{item.high}}</td>
                         <td>{{item.low}}</td>
                         <td>{{item.openIntrest}}</td>
+                        <td><font v-bind:color="item.oi_change >= 0 ? 'Green':'Red'">{{item.oi_change}}%</font></td>
                         <td>{{item.tradedQty}}</td>
                         <td>{{item.notionalValue}}</td>
                     </tr>

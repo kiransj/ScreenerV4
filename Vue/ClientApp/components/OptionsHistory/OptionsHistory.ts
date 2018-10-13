@@ -43,13 +43,18 @@ export default class HistoryComponent extends Vue {
         fetch('/api/StockData/GetNiftyOptionsDataFor?date='+this.expDate+"&strikePrice="+this.strikePrice+"&callOption="+this.callOption)
         .then(response => response.json() as Promise<OptionsReport[]>)
         .then(data => {
-            data.forEach(x => {
-                x.change = Math.round(100.0 * (x.close - x.open)/x.open);
-                x.notionalValue = Math.round(x.notionalValue/10000000);
-                x.oi_change = Math.round(100*(x.openIntrest - x.openInterestPrev)/x.openInterestPrev);
-                x.expiryDate = Moment(x.expiryDate).format('DD-MM-YYYY')
-            });
             this.optionsReport = data;
+            var i = 0;
+            while(i < (this.optionsReport.length -1))
+            {
+                this.optionsReport[i].change = Math.round(100.0 * (this.optionsReport[i].close - this.optionsReport[i+1].close)/this.optionsReport[i+1].close);
+                this.optionsReport[i].oi_change = Math.round(100.0 * (this.optionsReport[i].openIntrest - this.optionsReport[i+1].openIntrest)/this.optionsReport[i+1].openIntrest);
+                this.optionsReport[i].notionalValue = Math.round(this.optionsReport[i].notionalValue/10000000);
+                this.optionsReport[i].expiryDate = Moment(this.optionsReport[i].expiryDate).format('DD-MM-YYYY');
+                i++;
+            }
+            this.optionsReport[i].notionalValue = Math.round(this.optionsReport[i].notionalValue/10000000);
+            this.optionsReport[i].expiryDate = Moment(this.optionsReport[i].expiryDate).format('DD-MM-YYYY');
         });
     }
 }

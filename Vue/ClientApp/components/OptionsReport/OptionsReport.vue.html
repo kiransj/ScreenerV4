@@ -4,7 +4,7 @@
             <h3>Options Report</h3>
         </div>
         <div class="row">
-            <div class="col-sm-6 input-group input-group-lg">
+            <div class="col-sm-8 input-group input-group-lg">
                 <button class="LinkButton active" v-on:click="ShowOptionsForExpiryDate('')"> Show all</button>
                 <div id="myBtnContainer" v-for="item in dates">
                     <button style="padding: 10px;" class="LinkButton" v-on:click="ShowOptionsForExpiryDate(item)"> {{item}}</button>
@@ -12,8 +12,8 @@
                 <button style="padding: 10px;" class="LinkButton" v-on:click="ShowOptionsType(1)"> Call </button>
                 <button style="padding: 10px;" class="LinkButton" v-on:click="ShowOptionsType(0)"> Put </button>
             </div>
-            <div class="col-sm-6 input-group input-group-lg" v-if="currentDisplayedDate.length > 0">
-                <p style="color: green">Show data for expiry date {{currentDisplayedDate}}</p>
+            <div class="col-sm-4 input-group input-group-lg" v-if="currentDisplayedDate.length > 0">
+                <p style="color: green">Showing data for expiry date {{currentDisplayedDate}}</p>
             </div>
         </div>
         <div class="row" style="overflow: scroll; overflow-x: auto; height: 85vh; padding-top: 5px">
