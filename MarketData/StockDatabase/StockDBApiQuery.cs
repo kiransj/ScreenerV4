@@ -106,12 +106,12 @@ namespace MarketData.StockDatabase
             return stockDatabase.IndexInformation.ToDictionary(x => x.IndexId, x => x.IndexName);
         }
 
-        public List<IndexBhavTable> GetIndexData(DateTime date)
+        public List<NiftyIndexBhavTable> GetIndexData(DateTime date)
         {
             int day = DateToDay(date);
 
             Globals.Log.Debug($"Querying database for Indexdata for date {date.ToString("dd-MMM-yyyy")}");
-            return stockDatabase.IndexBhav.Where(x => x.Day == day).ToList();
+            return stockDatabase.NiftyIndexBhav.Where(x => x.Day == day).ToList();
         }
 
         public List<EquityInformationTable> GetListOfEquity()

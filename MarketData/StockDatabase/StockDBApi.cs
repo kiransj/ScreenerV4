@@ -78,11 +78,11 @@ namespace MarketData.StockDatabase
             return et;
         }
 
-        private IndexBhavTable IndexBhavToTable(IndexBhav bhav, DateTime date, int indexId)
+        private NiftyIndexBhavTable NiftyIndexBhavToTable(IndexBhav bhav, DateTime date)
         {
-            var indexBhav = new IndexBhavTable();
+            var indexBhav = new  NiftyIndexBhavTable();
 
-            indexBhav.IndexId = indexId;
+            indexBhav.IndexName = bhav.IndexName;
             indexBhav.Day = DateToDay(date);
             indexBhav.Open = bhav.OpenValue;
             indexBhav.Close = bhav.CloseValue;
@@ -95,7 +95,7 @@ namespace MarketData.StockDatabase
             indexBhav.PE = bhav.PE;
             indexBhav.PB = bhav.PB;
             indexBhav.DivYield = bhav.DivYield;
-            Globals.Log.Debug($"Adding Index {indexBhav.IndexId}/{indexBhav.Day}");
+            Globals.Log.Debug($"Adding NiftyIndex data {indexBhav.IndexName}/{indexBhav.Day} to DB");
             return indexBhav;
         }
 
@@ -150,8 +150,15 @@ namespace MarketData.StockDatabase
                 PrVal = x.PrVal
             });
             stockDatabase.NiftyBhav.AddRange(result);
-            stockDatabase.SaveChanges();
-            return result.Count();
+            return stockDatabase.SaveChanges();
+        }
+
+        public int AddNiftyIndexOptionsData(DateTime date,  List<IndexBhav> bhav)
+        {
+            int day = DateToDay(date);
+            var result = bhav.Select(x => NiftyIndexBhavToTable(x, date));
+            stockDatabase.NiftyIndexBhav.AddRange(result);
+            return stockDatabase.SaveChanges();
         }
 
         public int AddBhavData(DateTime date, List<Bhav> bhav,
@@ -187,7 +194,7 @@ namespace MarketData.StockDatabase
             }
             stockDatabase.SaveChanges();
 
-            // Add the bhav data to DB
+            // Add the Equity bhav data to DB
             mapping = stockDatabase.CompanyInformation.ToDictionary(x => x.Symbol, x => x.CompanyId);
             foreach(var item in bhav.Where(x => x.Series == "EQ" || x.Series == "BE"))
             {
@@ -197,13 +204,10 @@ namespace MarketData.StockDatabase
                                                                mappingCircuitBreaker.ContainsKey(item.Symbol) ? mappingCircuitBreaker[item.Symbol] : ""));
             }
 
-            var indexMapping = stockDatabase.IndexInformation.ToDictionary(x => x.IndexName, x => x.IndexId);
-            foreach(var item in indexBhav.OrderBy(x => x.IndexName))
-            {
-                if(indexMapping.ContainsKey(item.IndexName))
-                    stockDatabase.IndexBhav.Add(IndexBhavToTable(item, date, indexMapping[item.IndexName]));
-            }
+            // Update nifty index information
+            stockDatabase.NiftyIndexBhav.AddRange(indexBhav.Select(x => NiftyIndexBhavToTable(x, date)));
 
+            // Compute 52 week high low
             var highLow52 = highLow52Week.Where(x => x.Series == "EQ" || x.Series == "BE").ToDictionary(x => mapping[x.Symbol], x => x);
             var bhavDict = bhav.Where(x => x.Series == "EQ" || x.Series == "BE").ToDictionary(x => x.Symbol, x => (x.ChangePct > 0 ? "U" : "D"));
             foreach(var item in stockDatabase.HighLow52Week)
@@ -218,6 +222,7 @@ namespace MarketData.StockDatabase
                 }
             }
 
+            // Add high Low entiries to database
             foreach(var item in highLow52)
             {
                 stockDatabase.HighLow52Week.Add(new HighLow52WeekTable() {
@@ -228,7 +233,7 @@ namespace MarketData.StockDatabase
                 });
             }
 
-            // For now only save nifty index options. Later we need to add support for 
+            // For now only save nifty index options. Later we need to add support for stock options
             var result = optionsbhav.Where(x => (x.Instrument.Equals("OPTIDX") && x.Symbol.Equals("NIFTY"))).Select(x => new NiftyBhavTable() {
                 OptionId = 1,
                 Day = DateToDay(date),

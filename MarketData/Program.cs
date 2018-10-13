@@ -54,8 +54,9 @@ namespace MarketData
         {
             Globals.InitGlobals("Options.json");
             StockServices ss = new StockServices();
-            var t = ss.UpdateStockDataToToday();
+            //var t = ss.UpdateStockDataToToday();
             //var t = ss.UpdateNiftyOptionsToToday();
+            var t = ss.UpdateNiftyIndexToToday();
             t.Wait();
             Globals.Log.Info($"Updated data for {t.Result} days");
         }

@@ -40,6 +40,32 @@ namespace MarketData
             return count;
         }
 
+        public async Task<int> UpdateNiftyIndexToToday()
+        {
+            var updatedDate = dbApi.GetTradedDaysN();
+            int updatedDays = 0;
+            for(int i = 0; i < updatedDate.Count(); i++)
+            {
+                var dateToUpdate = updatedDate[i];
+                Globals.Log.Info($"Updating Market data for date {dateToUpdate}");
+
+                var data = await marketApi.GetDailyData(dateToUpdate);
+                if(data != null)
+                {
+                    int count = dbApi.AddNiftyIndexOptionsData(dateToUpdate, data.IndexBhavData);
+                    Globals.Log.Info($"Updated Nifty INdex data for date {dateToUpdate.ToShortDateString()}");
+
+                    updatedDays++;
+                }
+                else
+                {
+                    Globals.Log.Error($"Failed to Update Market data for date {dateToUpdate}");
+                }
+            }
+            return updatedDays;
+        }
+
+
         public async Task<int> UpdateNiftyOptionsToToday()
         {
             var updatedDate = dbApi.GetTradedDaysN();
@@ -52,10 +78,9 @@ namespace MarketData
                 var data = await marketApi.GetDailyData(dateToUpdate);
                 if(data != null)
                 {
-                    //dbApi.AddOrUpdateEquityInformation(data.Equitys, data.Etfs, data.Indexes);
-                    //dbApi.AddNiftyStockOptionsData(dateToUpdate, data.niftyOptionBhav);
-                    dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
-                                                    data.circuitBreaker, data.highLow52Week, data.niftyOptionBhav);
+                    dbApi.AddNiftyStockOptionsData(dateToUpdate, data.niftyOptionBhav);
+                    /*dbApi.AddBhavData(dateToUpdate, data.BhavData, data.deliveryPosition, data.IndexBhavData,
+                                                    data.circuitBreaker, data.highLow52Week, data.niftyOptionBhav);*/
 
                     updatedDays++;
                 }

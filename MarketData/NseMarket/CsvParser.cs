@@ -98,18 +98,18 @@ namespace MarketData.NseMarket
         public CsvIndexBhav() : base()
         {
             MapProperty(0, x => x.IndexName);
-            MapProperty(1, x => x.IndexDate);
+            //MapProperty(1, x => x.IndexDate);
             MapProperty(2, x => x.OpenValue);
             MapProperty(3, x => x.HighValue);
             MapProperty(4, x => x.LowValue);
             MapProperty(5, x => x.CloseValue);
-            MapProperty(6, x => x.PointsChange);
-            MapProperty(7, x => x.PointsChangePct);
+            //MapProperty(6, x => x.PointsChange);
+            //MapProperty(7, x => x.PointsChangePct);
             MapProperty(8, x => x.Volume);
             MapProperty(9, x => x.TurnOver);
-            MapProperty(10, x => x.PE);
-            MapProperty(11, x => x.PB);
-            MapProperty(12, x => x.DivYield);
+            //MapProperty(10, x => x.PE);
+            //MapProperty(11, x => x.PB);
+            //MapProperty(12, x => x.DivYield);
         }
     }
 

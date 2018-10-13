@@ -3,14 +3,16 @@ using System;
 using MarketData.StockDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MarketData.Migrations
 {
     [DbContext(typeof(StockDataContext))]
-    partial class StockDataContextModelSnapshot : ModelSnapshot
+    [Migration("20181013052822_NiftyIndexBhavTable")]
+    partial class NiftyIndexBhavTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
