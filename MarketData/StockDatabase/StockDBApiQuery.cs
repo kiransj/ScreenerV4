@@ -53,9 +53,22 @@ namespace MarketData.StockDatabase
         {
             int day = DateToDay(expDate);
             Globals.Log.Debug($"Querying database for niftyOptions data for {expDate.ToString("dd-MMM-yyyy")} and strike price {strikePrice} and callOptions : {callOptions.ToString()}");
-
             var data = stockDatabase.NiftyBhav.Where(x => (x.ExpDay == day && x.StrikePrice == strikePrice && x.CallOption == callOptions)) .ToList();
+            return data;
+        }
 
+        public List<NiftyIndexBhavTable> GetNiftyIndexDataFor(string indexName)
+        {
+            Globals.Log.Debug($"Querying database for niftyIndex data for {indexName}");
+            var data = stockDatabase.NiftyIndexBhav.Where(x => (x.IndexName == indexName)).ToList();
+            return data;
+        }
+
+        public List<NiftyIndexBhavTable> GetNiftyIndexBhavData(DateTime date)
+        {
+            int day = DateToDay(date);
+            Globals.Log.Debug($"Querying database for niftyIndexBhav data for date {date.ToString("dd-MMM-yyyy")}");
+            var data = stockDatabase.NiftyIndexBhav.Where(x => x.Day == day).ToList();
             return data;
         }
 

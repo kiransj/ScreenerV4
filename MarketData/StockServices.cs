@@ -211,6 +211,10 @@ namespace MarketData
             return dbApi.GetNiftyOptionsDataFor(expDate, strikePrice, callOptions);
         }
 
+        public List<NiftyIndexBhavTable> GetNiftyIndexDataFor(string indexName)
+        {
+            return dbApi.GetNiftyIndexDataFor(indexName);
+        }
 
         public int RemoveStockToFavList(string symbol, string listName)
         {

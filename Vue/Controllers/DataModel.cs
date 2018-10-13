@@ -112,12 +112,42 @@ namespace Vue.Controllers
         public double totDelQty;
     }
 
+    public class NiftyIndexHistory
+    {
+        public DateTime date;
+        public double open;
+        public double close;
+        public double high;
+        public double low;
+        public double volume;
+        public double turnOver;
+
+        public NiftyIndexHistory(NiftyIndexBhavTable tb, DateTime date)
+        {
+            this.date = date;
+            open = tb.Open;
+            close = tb.Close;
+            high = tb.High;
+            low = tb.Low;
+            volume = tb.Volume;
+            turnOver = tb.TurnOver;
+        }
+    }
+
     public class StockReport
     {
         static List<EquityBhavTable> bhav;
         static List<EquityOHLCTable> ohlc;
         static List<HighLow52WeekTable> highLow;
         static Dictionary<int, string> mapping;
+
+
+        static public List<NiftyIndexHistory> GetNiftyIndexHistory(string indexName)
+        {
+            StockServices stockService = new StockServices();
+            var data = stockService.GetNiftyIndexDataFor(indexName).Select(x => new NiftyIndexHistory(x, stockService.DayToDate(x.Day))).ToList();
+            return data;
+        }
 
         static public List<StockHistory> GetStockHistory(string symbol)
         {
