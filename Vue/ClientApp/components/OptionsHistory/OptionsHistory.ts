@@ -45,7 +45,6 @@ export default class HistoryComponent extends Vue {
 
     //Plot parameters
     indexPlot:PlotParameters = new PlotParameters();
-    optionIndexPlot:PlotParameters = new PlotParameters();
     optionPricePlot:PlotParameters = new PlotParameters();
 
     // Fetched Results
@@ -78,7 +77,6 @@ export default class HistoryComponent extends Vue {
         this.strikePrice = parseInt(this.$route.params.strikePrice);
         this.callOption = this.$route.params.callOption;
 
-
         fetch('/api/StockData/GetNiftyIndexHistory?index='+ btoa("Nifty 50"))
         .then(response => response.json() as Promise<IndexHistory[]>)
         .then(data => {
@@ -94,42 +92,17 @@ export default class HistoryComponent extends Vue {
             .then(data => {
                 this.optionsReport = this.processOptionsReports(data);
                 this.optionsReport.forEach(x => {
-                    this.optionIndexPlot.xaxisString.push(x.expiryDate);
-                    this.optionIndexPlot.yaxisValue.push(x.strikePrice + x.close);
-
                     this.optionPricePlot.xaxisString.push(x.expiryDate);
                     this.optionPricePlot.yaxisValue.push(x.close);
                 });
-                this.showGraphs(this.indexPlot, this.optionIndexPlot, this.optionPricePlot);
+                this.showGraphs(this.indexPlot, this.optionPricePlot);
             });
-        })
-        .then(x => {
-            //this.showGraphs(this.indexPlot, this.optionPlot);
         });
     }
 
 
-    private showGraphs(niftyIndex:PlotParameters, optionIndex:PlotParameters, optionPrice:PlotParameters) : void{
-        const plotNifty: Plotly.Data = { x: niftyIndex.xaxisString, y:niftyIndex.yaxisValue, xaxis: "Date", name: "index", yaxis: "y3", connectgaps: true, type: "scatter" };
-        const plotOption: Plotly.Data = { x: optionIndex.xaxisString, y:optionIndex.yaxisValue, xaxis: "Date", name: "option", yaxis: "y2", connectgaps: true, type: "scatter" };
+    private showGraphs(niftyIndex:PlotParameters,  optionPrice:PlotParameters) : void{
 
-      /*  const fullPlot:Plotly.Data[] =  [
-        {
-            x: niftyIndex.xaxisString,
-            y: niftyIndex.yaxisValue,
-            type: "scatter",
-            xaxis: "Date",
-            name: "Nifty Index" ,
-            yaxis: "y2",
-        },
-        {
-            x: optionIndex.xaxisString,
-            y:  optionIndex.yaxisValue,
-            type: "scatter",
-            xaxis: "Date",
-            name: "Option price",
-            yaxis: "y3",
-        }];*/
         const fullPlot:Plotly.Data[] = [
             {
                 x: niftyIndex.xaxisString,
@@ -155,26 +128,10 @@ export default class HistoryComponent extends Vue {
             },
         ];
         Plotly.newPlot('pricePlot', fullPlot, {
-            title: "Volume Plot",
-            xaxis:
-            {
-                type: "date",
-            },
-            yaxis:
-            {
-                title: "Nift Index",
-            },
-            yaxis3:
-            {
-                //side: "left", overlaying: 'y' as '/^y([2-9]|[1-9][0-9]+)?$/',
-                title: "Option Price"
-            },
-            yaxis2:
-            {
-                side: "right", overlaying: 'y' as '/^y([2-9]|[1-9][0-9]+)?$/',
-                title: "Option Price"
-            },
-            barmode: "stack"
+            title: "Nifty Options Plot",
+            xaxis: { type: "date"},
+            yaxis: { title: "Nift Index" },
+            yaxis2: { side: "right", title: "Option Price", overlaying: 'y' as '/^y([2-9]|[1-9][0-9]+)?$/'},
          });
     }
 }

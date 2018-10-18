@@ -29,6 +29,8 @@ class UIState {
     callType: number = -1;
     sortKey:string = "";
     sortReverse:number = -1;
+    tradedDates: string[] = [];
+    currentDay: number = 0;
 }
 
 let uiState:UIState = new UIState();
@@ -38,37 +40,61 @@ export default class OptionsReportComponent extends Vue {
     currentDisplayedDate: string = "";
     optionsReport: OptionsReport[] = [];
     dates: string[] = [];
+    tradedDates: string[] = [];
+    currentDay: number = 0;
     constructor()
     {
         super();
         Vue.filter('DateToString', function(date:string)  { if (date) { return Moment(date).format('DD-MM-YYYY'); }});
     }
 
+    parseOptionsReport(data: OptionsReport[]): void {
+        data.forEach(x => {
+            x.change = x.lastClose != 0 ? Math.round(100.0 * (x.close - x.lastClose)/x.lastClose) : 0;
+            x.notionalValue = Math.round(x.notionalValue/10000000);
+            x.oi_change = Math.round(100*(x.openIntrest - x.openInterestPrev)/x.openInterestPrev);
+            x.expiryDate = Moment(x.expiryDate).format('DD-MM-YYYY')
+        });
+        this.dates = data.map(x => x.expiryDate);
+        this.dates = this.dates.filter((el, i, a) => i === a.indexOf(el));
+
+        uiState.optionReport = this.optionsReport = data;
+        uiState.dates = this.dates;
+    }
+
+    DownloadOptionsData(date: string): void {
+        var d = Moment(date).format('DD-MM-YYYY');
+
+        fetch('/api/StockData/GetNiftyOptionsDataOn?date='+d)
+        .then(response => response.json() as Promise<OptionsReport[]>)
+        .then(data => {
+            this.parseOptionsReport(data);
+            this.sortBy(uiState.sortKey, false);
+        })
+        .catch(err => {
+            alert("Unable to download Options Data");
+        })
+    }
+
     created(): void {
         if(uiState.optionReport.length == 0)
         {
-            //this.symbol = this.$route.params.symbol;
-            fetch('/api/StockData/GetLatestNiftyOptionsData')
-            .then(response => response.json() as Promise<OptionsReport[]>)
-            .then(data => {
-                data.forEach(x => {
-                    x.change = x.lastClose != 0 ? Math.round(100.0 * (x.close - x.lastClose)/x.lastClose) : 0;
-                    x.notionalValue = Math.round(x.notionalValue/10000000);
-                    x.oi_change = Math.round(100*(x.openIntrest - x.openInterestPrev)/x.openInterestPrev);
-                    x.expiryDate = Moment(x.expiryDate).format('DD-MM-YYYY')
-                });
-                this.dates = data.map(x => x.expiryDate);
-                this.dates = this.dates.filter((el, i, a) => i === a.indexOf(el));
-
-                uiState.optionReport = this.optionsReport = data;
-                uiState.dates = this.dates;
+            fetch('/api/StockData/GetTradedDates')
+            .then(response => response.json() as Promise<string[]>)
+            .then( data => {
+                uiState.tradedDates = this.tradedDates = data;
+                uiState.currentDay = this.currentDay = 0;
+                this.DownloadOptionsData(this.tradedDates[0]);
             });
+
         } else {
             this.sortReverse = uiState.sortReverse;
+            this.dates = uiState.dates;
+            this.tradedDates = uiState.tradedDates;
+            this.currentDay = uiState.currentDay;
             this.ShowOptionsForExpiryDate(uiState.currentDisplayedDate);
             this.ShowOptionsType(uiState.callType);
             this.sortBy(uiState.sortKey, false);
-            this.dates = uiState.dates;
         }
     }
 
@@ -112,5 +138,23 @@ export default class OptionsReportComponent extends Vue {
                 this.optionsReport = this.optionsReport.sort((left, right): number => (left[sortKey] - right[sortKey]) * this.sortReverse);
                 break;
         }
+    }
+
+    ShowPrevDay() {
+        if(this.currentDay == this.tradedDates.length - 1) {
+            alert("Data updated only till " + Moment(this.tradedDates[this.currentDay]).format('DD-MM-YYYY'))
+            return;
+        }
+        uiState.currentDay = ++this.currentDay;
+        this.DownloadOptionsData(this.tradedDates[this.currentDay]);
+    }
+
+    ShowNextDay() {
+        if(this.currentDay == 0) {
+            alert("Data updated only till " + Moment(this.tradedDates[this.currentDay]).format('DD-MM-YYYY'))
+            return;
+        }
+        uiState.currentDay = --this.currentDay;
+        this.DownloadOptionsData(this.tradedDates[this.currentDay]);
     }
 }

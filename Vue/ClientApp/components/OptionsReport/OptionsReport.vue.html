@@ -1,7 +1,9 @@
 <template>
     <div>
-        <div class="row">
-            <h3>Options Report</h3>
+        <div class="row" style="padding-bottom: 50px;">
+            <button  class="previous" v-on:click="ShowPrevDay()">&laquo; Previous</button>
+            <h3>Options Report for {{tradedDates[currentDay] | DateToString}}</h3>
+            <button href="#" class="next" v-on:click="ShowNextDay()">Next &raquo;</button>
         </div>
         <div class="row">
             <div class="col-sm-8 input-group input-group-lg">

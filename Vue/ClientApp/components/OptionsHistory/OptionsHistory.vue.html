@@ -1,9 +1,7 @@
 <template>
     <div>
         <div class="row">
-            <h3>Options History for Expiry Date: {{expDate}}, StrikePrice: {{strikePrice}}, optionType: {{callOption.localeCompare("true") == 0
-                    ? "call": "put"}}</h3>
-            <h2><button style="padding: 10px;" class="LinkButton" v-on:click="ShowG()"> ShowGraphs </button></h2>
+            <h3>Options History for Expiry Date: {{expDate}}, StrikePrice: {{strikePrice}}, optionType: {{callOption.localeCompare("true") == 0 ? "call": "put"}}</h3>
         </div>
         <div class="row" style="width:auto;height:auto;" id="pricePlot"></div>
         <div class="row" style="overflow: scroll; overflow-x: auto; height: 85vh; padding-top: 5px">

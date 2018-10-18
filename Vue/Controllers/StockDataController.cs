@@ -52,6 +52,36 @@ namespace vue.Controllers
         }
 
         [HttpGet("[action]")]
+        public IActionResult GetTradedDates()
+        {
+            var tradedDays = stockService.GetTradedDates().OrderByDescending(x => x).ToList();
+            return Ok(tradedDays);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult GetNiftyOptionsDataOn(string date)
+        {
+            var tradedDays = stockService.GetTradedDates().OrderByDescending(x => x).ToList();
+            var d = DateTime.ParseExact(date, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            int i = 0, count = tradedDays.Count();
+            for(i = 0; i < count; i++)
+            {
+                if((tradedDays[i]-d).TotalDays == 0)
+                {
+                    break;
+                }
+            }
+
+            if(count == i) {
+                return NotFound();
+            }
+
+            var result = StockReport.GetNiftyOptionsData(tradedDays[i], tradedDays[i+1]);
+            Globals.Log.Info($"Nifty Options report Query");
+            return Ok(result);
+        }
+
+        [HttpGet("[action]")]
         public ActionResult GetNiftyOptionsDataFor(string expiryDate, long strikePrice, bool callOption)
         {
             var d = DateTime.ParseExact(expiryDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
